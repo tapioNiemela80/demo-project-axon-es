@@ -1,0 +1,10 @@
+package tn.portfolio.axon.team.domain;
+
+public class UnknownTeamMemberIdException extends RuntimeException {
+    private final TeamMemberId teamMemberId;
+
+    public UnknownTeamMemberIdException(TeamMemberId teamMemberId) {
+        super("Unknown team member %s".formatted(teamMemberId));
+        this.teamMemberId = teamMemberId;
+    }
+}
