@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface ProjectTaskEventRepository extends JpaRepository<ProjectTaskEvent, UUID> {
+public interface TeamViewToProjectTaskRepository extends JpaRepository<TeamViewToProjectTask, UUID> {
 }

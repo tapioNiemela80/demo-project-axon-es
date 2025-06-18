@@ -10,8 +10,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "project_task_events", schema = "project_demo_cqrs")
-public class ProjectTaskEvent {
+@Table(name = "team_view_project_tasks", schema = "project_demo_cqrs")
+public class TeamViewToProjectTask {
 
     @Id
     private UUID taskId;
@@ -31,11 +31,11 @@ public class ProjectTaskEvent {
     @Column(name = "estimation_minutes", nullable = false)
     private int estimationMinutes;
 
-    protected ProjectTaskEvent(){
+    protected TeamViewToProjectTask(){
         //for jpa
     }
 
-    public ProjectTaskEvent(UUID taskId, UUID projectId, String name, String description, int estimationHours, int estimationMinutes) {
+    public TeamViewToProjectTask(UUID taskId, UUID projectId, String name, String description, int estimationHours, int estimationMinutes) {
         this.taskId = taskId;
         this.projectId = projectId;
         this.name = name;
@@ -76,7 +76,7 @@ public class ProjectTaskEvent {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProjectTaskEvent other = (ProjectTaskEvent) o;
+        TeamViewToProjectTask other = (TeamViewToProjectTask) o;
         return Objects.equals(taskId, other.taskId);
     }
 

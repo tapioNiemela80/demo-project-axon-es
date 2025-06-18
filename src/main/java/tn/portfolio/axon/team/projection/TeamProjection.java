@@ -12,9 +12,9 @@ import tn.portfolio.axon.team.event.*;
 @ProcessingGroup("team-projection")
 public class TeamProjection {
     private final TeamRepository teams;
-    private final ProjectTaskEventRepository projectTasks;
+    private final TeamViewToProjectTaskRepository projectTasks;
 
-    public TeamProjection(TeamRepository teams, ProjectTaskEventRepository projectTasks) {
+    public TeamProjection(TeamRepository teams, TeamViewToProjectTaskRepository projectTasks) {
         this.teams = teams;
         this.projectTasks = projectTasks;
     }
@@ -31,7 +31,7 @@ public class TeamProjection {
         var id = event.taskId().value();
         var projectId = event.projectId().value();
         var estimation = event.estimation();
-        projectTasks.save(new ProjectTaskEvent(id, projectId, event.name(), event.description(), estimation.getHours(), estimation.getMinutes()));
+        projectTasks.save(new TeamViewToProjectTask(id, projectId, event.name(), event.description(), estimation.getHours(), estimation.getMinutes()));
     }
 
     @EventHandler

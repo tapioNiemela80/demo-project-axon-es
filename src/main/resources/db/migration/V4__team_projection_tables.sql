@@ -22,7 +22,7 @@ CREATE TABLE project_demo_cqrs.team_tasks (
     actual_time_spent_minutes INTEGER
 );
 
-CREATE TABLE project_demo_cqrs.project_task_events (
+CREATE TABLE project_demo_cqrs.team_view_project_tasks (
     task_id UUID PRIMARY KEY,
     project_id UUID NOT NULL,
     name TEXT NOT NULL,
