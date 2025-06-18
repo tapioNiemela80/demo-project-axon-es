@@ -10,6 +10,8 @@ import tn.portfolio.axon.approval.command.RejectProjectByApproverCommand;
 import tn.portfolio.axon.approval.event.ProjectApprovedByApproverEvent;
 import tn.portfolio.axon.approval.event.ProjectApprovementInitializedEvent;
 import tn.portfolio.axon.approval.event.ProjectRejectedByApproverEvent;
+import tn.portfolio.axon.common.domain.ProjectId;
+import tn.portfolio.axon.project.domain.ApproverId;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
@@ -17,6 +19,8 @@ import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 public class ApprovalAggregate {
     @AggregateIdentifier
     private ApprovalId approvalId;
+    private ApproverId approverId;
+    private ProjectId projectId;
     private ApprovalStatus status;
     public ApprovalAggregate() {
     }
@@ -29,7 +33,7 @@ public class ApprovalAggregate {
     @CommandHandler
     public void on(ApproveProjectByApproverCommand cmd){
         if(status!=ApprovalStatus.PENDING){
-            throw new IllegalStateException("Cannot change approval status");
+            throw new IllegalStateException("Cannot change approval status of %s on project %s".formatted(approverId, projectId));
         }
         apply(new ProjectApprovedByApproverEvent(cmd.projectId(), cmd.approverId()));
     }
@@ -37,7 +41,7 @@ public class ApprovalAggregate {
     @CommandHandler
     public void on(RejectProjectByApproverCommand cmd){
         if(status!=ApprovalStatus.PENDING){
-            throw new IllegalStateException("Cannot change approval status");
+            throw new IllegalStateException("Cannot change approval status of %s on project %s".formatted(approverId, projectId));
         }
         apply(new ProjectRejectedByApproverEvent(cmd.projectId(), cmd.approverId(), cmd.reason()));
     }
@@ -46,6 +50,8 @@ public class ApprovalAggregate {
     public void on(ProjectApprovementInitializedEvent event) {
         this.approvalId = event.approvalId();
         this.status = ApprovalStatus.PENDING;
+        this.projectId = event.projectId();
+        this.approverId = event.approverId();
     }
 
     @EventSourcingHandler
