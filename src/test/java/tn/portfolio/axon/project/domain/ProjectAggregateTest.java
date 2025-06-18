@@ -74,6 +74,37 @@ public class ProjectAggregateTest {
     }
 
     @Test
+    void projectShouldNotBeMarkedCompleteWhenOnlySomeTasksAreCompleted() {
+        var projectId = new ProjectId(UUID.randomUUID());
+        var task1 = new ProjectTaskId(UUID.randomUUID());
+        var task2 = new ProjectTaskId(UUID.randomUUID());
+        var task3 = new ProjectTaskId(UUID.randomUUID());
+        var estimation = new TimeEstimation(2, 0);
+        var estimatedEndDate = LocalDate.of(2025, 12, 31);
+
+        var initEvt = new ProjectInitializedEvent(
+                projectId,
+                "Test Project",
+                "Only some tasks complete",
+                estimatedEndDate,
+                new TimeEstimation(6, 0)
+        );
+
+        var task1Added = new TaskAddedToProjectEvent(projectId, task1, "Task 1", "First", estimation);
+        var task2Added = new TaskAddedToProjectEvent(projectId, task2, "Task 2", "Second", estimation);
+        var task3Added = new TaskAddedToProjectEvent(projectId, task3, "Task 3", "Third", estimation);
+
+        var task1Completed = new ProjectTaskCompletedEvent(projectId, task1, new ActualSpentTime(2, 0));
+        var task2Completed = new ProjectTaskCompletedEvent(projectId, task2, new ActualSpentTime(2, 0));
+
+        fixture.given(initEvt, task1Added, task2Added, task3Added, task1Completed)
+                .when(new CompleteTaskCommand(projectId, task2, new ActualSpentTime(2, 0)))
+                .expectSuccessfulHandlerExecution()
+                .expectEvents(task2Completed)
+                .expectState(aggregate -> aggregate.isInState(ProjectStatus.PLANNED));
+    }
+
+    @Test
     void shouldCompleteTaskAndEmitProjectCompletedEventIfAllTasksComplete() {
         var projectId = new ProjectId(UUID.randomUUID());
         var taskId = new ProjectTaskId(UUID.randomUUID());

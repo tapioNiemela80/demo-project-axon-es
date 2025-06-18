@@ -153,6 +153,10 @@ public class ProjectAggregate {
         };
     }
 
+    boolean isInState(ProjectStatus expected){
+        return this.status == expected;
+    }
+
     private <T> List<T> concat(List<T> things, T newThing) {
         return Stream.concat(things.stream(), Stream.of(newThing)).toList();
     }
