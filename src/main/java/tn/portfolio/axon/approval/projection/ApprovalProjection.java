@@ -34,7 +34,7 @@ public class ApprovalProjection {
     public void on(ProjectApprovementInitializedEvent event){
         approvals.save(Approval.newInstance(event.approvalId().value(), event.approverId().value(),
                 event.projectId().value(),
-                event.approverName(), event.role().name(), event.approverEmail()));
+                event.approverName(), event.approverEmail(), event.role().name()));
     }
 
     @EventHandler
