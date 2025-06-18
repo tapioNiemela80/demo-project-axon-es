@@ -42,28 +42,25 @@ class ProjectViewRepository {
     }
 
     private Function<EntityRecord, ProjectTaskRow> singleProjectMapper() {
-        return new Function<EntityRecord, ProjectTaskRow>() {
-            @Override
-            public ProjectTaskRow apply(EntityRecord r) {
-                UUID id = r.getUUID("id");
-                String name = r.getString("name");
-                String desc = r.getString("description");
-                Integer projectEstHours = r.getInteger("project_estimate_hours");
-                Integer projectEstMinutes = r.getInteger("project_estimate_minutes");
-                String status = r.getString("project_status");
-                UUID taskId = r.getUUID("task_id");
-                String taskTitle = r.getString("task_title");
-                String taskDescription = r.getString("task_description");
-                String taskStatus = r.getString("task_status");
-                Integer taskEstHours = r.getInteger("task_estimate_hours");
-                Integer taskEstMinutes = r.getInteger("task_estimate_minutes");
-                Integer actualHours = r.getInteger("actual_hours");
-                Integer actualMinutes = r.getInteger("actual_minutes");
-                return new ProjectTaskRow(id, name, desc, projectEstHours,
-                        projectEstMinutes, status, taskId,
-                        taskTitle, taskDescription, taskStatus,
-                        taskEstHours, taskEstMinutes, actualHours, actualMinutes);
-            }
+        return r -> {
+            UUID id = r.getUUID("id");
+            String name = r.getString("name");
+            String desc = r.getString("description");
+            Integer projectEstHours = r.getInteger("project_estimate_hours");
+            Integer projectEstMinutes = r.getInteger("project_estimate_minutes");
+            String status = r.getString("project_status");
+            UUID taskId = r.getUUID("task_id");
+            String taskTitle = r.getString("task_title");
+            String taskDescription = r.getString("task_description");
+            String taskStatus = r.getString("task_status");
+            Integer taskEstHours = r.getInteger("task_estimate_hours");
+            Integer taskEstMinutes = r.getInteger("task_estimate_minutes");
+            Integer actualHours = r.getInteger("actual_hours");
+            Integer actualMinutes = r.getInteger("actual_minutes");
+            return new ProjectTaskRow(id, name, desc, projectEstHours,
+                    projectEstMinutes, status, taskId,
+                    taskTitle, taskDescription, taskStatus,
+                    taskEstHours, taskEstMinutes, actualHours, actualMinutes);
         };
     }
 

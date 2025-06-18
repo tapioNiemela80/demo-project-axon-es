@@ -41,27 +41,24 @@ private final EntityManagerUtils entityManagerUtils;
     }
 
     private Function<EntityRecord, TeamViewRow> teamViewRowMapper() {
-        return new Function<EntityRecord, TeamViewRow>() {
-            @Override
-            public TeamViewRow apply(EntityRecord r) {
-                UUID id = r.getUUID("team_id");
-                String name = r.getString("team_name");
-                UUID memberId = r.getUUID("member_id");
-                String memberName = r.getString("member_name");
-                String profession = r.getString("member_profession");
-                UUID taskId = r.getUUID("task_id");
-                String taskName = r.getString("task_name");
-                String description = r.getString("task_description");
-                UUID projectTaskId = r.getUUID("project_task_id");
-                String status = r.getString("task_status");
-                UUID assignee = r.getUUID("task_assignee_id");
-                Integer spentHours = r.getInteger("actual_time_spent_hours");
-                Integer spentMinutes = r.getInteger("actual_time_spent_minutes");
-                return new TeamViewRow(id, name, memberId,
-                        memberName, profession, taskId,
-                        taskName, description, projectTaskId,
-                        status, assignee, spentHours, spentMinutes);
-            }
+        return r -> {
+            UUID id = r.getUUID("team_id");
+            String name = r.getString("team_name");
+            UUID memberId = r.getUUID("member_id");
+            String memberName = r.getString("member_name");
+            String profession = r.getString("member_profession");
+            UUID taskId = r.getUUID("task_id");
+            String taskName = r.getString("task_name");
+            String description = r.getString("task_description");
+            UUID projectTaskId = r.getUUID("project_task_id");
+            String status = r.getString("task_status");
+            UUID assignee = r.getUUID("task_assignee_id");
+            Integer spentHours = r.getInteger("actual_time_spent_hours");
+            Integer spentMinutes = r.getInteger("actual_time_spent_minutes");
+            return new TeamViewRow(id, name, memberId,
+                    memberName, profession, taskId,
+                    taskName, description, projectTaskId,
+                    status, assignee, spentHours, spentMinutes);
         };
     }
 
@@ -76,8 +73,6 @@ private final EntityManagerUtils entityManagerUtils;
     }
 
     private Function<EntityRecord, TeamsViewRow> teamsViewRowMapper() {
-        return r -> {
-            return new TeamsViewRow(r.getUUID("team_id"), r.getString("team_name"));
-        };
+        return r -> new TeamsViewRow(r.getUUID("team_id"), r.getString("team_name"));
     }
 }

@@ -29,14 +29,9 @@ class ApprovalViewService {
     }
 
     private Function<EntityRecord, ApprovalView> mapper() {
-        return new Function<EntityRecord, ApprovalView>() {
-            @Override
-            public ApprovalView apply(EntityRecord r) {
-                return new ApprovalView(r.getString("name"), r.getString("email"),
-                        r.getString("project_role"), r.getString("approval_status"),
-                        r.getUUID("project_id"), r.getString("project_name"));
-            }
-        };
+        return r -> new ApprovalView(r.getString("name"), r.getString("email"),
+                r.getString("project_role"), r.getString("approval_status"),
+                r.getUUID("project_id"), r.getString("project_name"));
     }
 
 }
