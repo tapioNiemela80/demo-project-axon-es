@@ -8,8 +8,12 @@ import tn.portfolio.axon.team.domain.TeamId;
 import tn.portfolio.axon.team.domain.TeamMemberId;
 import tn.portfolio.axon.team.domain.TeamTaskId;
 import tn.portfolio.axon.team.service.TeamService;
+import tn.portfolio.axon.team.view.TeamView;
+import tn.portfolio.axon.team.view.TeamViewService;
+import tn.portfolio.axon.team.view.TeamsView;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -17,9 +21,11 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping("/teams")
 public class TeamController {
     private final TeamService teamService;
+    private final TeamViewService teamViewService;
 
-    public TeamController(TeamService teamService) {
+    public TeamController(TeamService teamService, TeamViewService teamViewService) {
         this.teamService = teamService;
+        this.teamViewService = teamViewService;
     }
 
     private ResponseEntity<Void> path(URI uri) {
@@ -97,7 +103,7 @@ public class TeamController {
                 .thenApply(this::noContent);
     }
 
-    /*@GetMapping
+    @GetMapping
     public ResponseEntity<List<TeamsView>> findAll() {
         return ResponseEntity.ok(teamViewService.findAll());
     }
@@ -108,6 +114,4 @@ public class TeamController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-     */
 }
