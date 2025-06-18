@@ -41,6 +41,7 @@ public class Project {
         this.id = id.value();
         this.name = name;
         this.description = description;
+        this.status = "PLANNED";
         this.createdAt = createdAt;
         this.plannedEndDate = plannedEndDate;
         this.initialEstimatedTimeHours = estimation.getHours();
