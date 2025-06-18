@@ -7,8 +7,12 @@ import tn.portfolio.axon.approval.service.ApprovalService;
 import tn.portfolio.axon.common.domain.ProjectId;
 import tn.portfolio.axon.project.domain.ApproverId;
 import tn.portfolio.axon.project.service.ProjectService;
+import tn.portfolio.axon.project.view.ProjectView;
+import tn.portfolio.axon.project.view.ProjectViewService;
+import tn.portfolio.axon.project.view.ProjectsView;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -18,10 +22,12 @@ public class ProjectController {
 
     private final ProjectService projectService;
     private final ApprovalService approvalService;
+    private final ProjectViewService projectViewService;
 
-    public ProjectController(ProjectService projectService, ApprovalService approvalService) {
+    public ProjectController(ProjectService projectService, ApprovalService approvalService, ProjectViewService projectViewService) {
         this.projectService = projectService;
         this.approvalService = approvalService;
+        this.projectViewService = projectViewService;
     }
 
     @PostMapping
@@ -57,6 +63,18 @@ public class ProjectController {
             return approvalService.reject(new ProjectId(projectId), new ApproverId(approverId), request.reason())
                     .thenApply(id -> ResponseEntity.noContent().build());
         }
+    }
+
+    @GetMapping
+    public List<ProjectsView> findAll(){
+        return projectViewService.findAll();
+    }
+
+    @GetMapping("/{projectId}")
+    public ResponseEntity<ProjectView> findOne(@PathVariable UUID projectId){
+        return projectViewService.findOne(projectId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     private ResponseEntity<Void> path(URI uri) {
