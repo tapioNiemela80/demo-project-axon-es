@@ -12,6 +12,4 @@ public record ProjectInitializedEvent(
         LocalDate estimatedEndDate,
         TimeEstimation estimation
 ) {
-
-
 }

@@ -22,7 +22,6 @@ import static tn.portfolio.axon.project.domain.ProjectStatus.PLANNED;
 
 @Aggregate
 public class ProjectAggregate {
-
     @AggregateIdentifier
     private ProjectId projectId;
     private String name;
@@ -71,6 +70,9 @@ public class ProjectAggregate {
 
     @CommandHandler
     public void on(CompleteTaskCommand completeTask) {
+        if (status != PLANNED) {
+            throw new ProjectAlreadyCompletedException(projectId);
+        }
         if (tasks.stream().noneMatch(task -> task.hasId(completeTask.taskId()))) {
             throw new UnknownProjectTaskIdException(completeTask.taskId());
         }
