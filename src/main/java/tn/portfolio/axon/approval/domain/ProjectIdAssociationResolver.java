@@ -14,21 +14,15 @@ public class ProjectIdAssociationResolver  implements AssociationResolver {
 
     @Override
     public <T> void validate(@Nonnull String associationPropertyName, @Nonnull MessageHandlingMember<T> handler) {
-        //System.out.println("Validating association property: " + associationPropertyName);
     }
 
     @Override
     public <T> Object resolve(@Nonnull String associationPropertyName, @Nonnull EventMessage<?> message, @Nonnull MessageHandlingMember<T> handler) {
-        //System.out.println("resolve association property: " + associationPropertyName);
         if (message.getPayload() instanceof ProjectApprovementInitializedEvent approvementEvent) {
-            System.out.println("approvementEvent **** "+approvementEvent.projectId());
-            String id =  approvementEvent.projectId().value().toString();
-            return id;
+            return approvementEvent.projectId().value().toString();
         }
         else if (message.getPayload() instanceof ProjectInitializedEvent initializedEvent) {
-            System.out.println("initializedEvent **** "+initializedEvent.projectId());
-            String id = initializedEvent.projectId().value().toString();
-            return id;
+            return initializedEvent.projectId().value().toString();
         }
         else if(message.getPayload() instanceof ProjectApprovedByApproverEvent approvedEvent){
             return approvedEvent.projectId().value().toString();
@@ -37,9 +31,7 @@ public class ProjectIdAssociationResolver  implements AssociationResolver {
         else if(message.getPayload() instanceof ProjectRejectedByApproverEvent rejectedEvent){
             return rejectedEvent.projectId().value().toString();
         }
-
-        System.out.println("___________________________________ "+message.getPayload().getClass());
-        return "FOO";
+        throw new IllegalArgumentException("Unknown message %s".formatted(message.getPayload().getClass()));
     }
 
 }

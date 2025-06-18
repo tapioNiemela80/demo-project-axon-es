@@ -5,6 +5,8 @@ import org.axonframework.modelling.saga.SagaEventHandler;
 import org.axonframework.modelling.saga.SagaLifecycle;
 import org.axonframework.modelling.saga.StartSaga;
 import org.axonframework.spring.stereotype.Saga;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import tn.portfolio.axon.approval.event.ProjectApprovedByApproverEvent;
 import tn.portfolio.axon.approval.event.ProjectApprovementInitializedEvent;
@@ -19,33 +21,22 @@ import java.util.UUID;
 @Saga
 public class ProjectApprovalSaga {
 
+    private static final Logger log = LoggerFactory.getLogger(ProjectApprovalSaga.class);
+
     private UUID projectId;
     private List<ProjectApprovalsData> projectApprovalsData;
 
     @Autowired
     private CommandGateway commandGateway;
 
-    static int howMany = 0;
-
-    public ProjectApprovalSaga() {
-        System.out.println("ProjectApprovalSaga " + howMany);
-        howMany++;
-    }
-
     @StartSaga
     @SagaEventHandler(associationProperty = "projectId", associationResolver = ProjectIdAssociationResolver.class)
     public void on(ProjectInitializedEvent event) {
-        System.out.println(" START SAGA ! ProjectInitializedEvent2 " + event.projectId());
+        log.info("Saga started on %s".formatted(event.projectId()));
         this.projectId = event.projectId().value();
         this.projectApprovalsData = new ArrayList<>();
-        System.out.println("this.projectId " + this.projectId);
         String id = event.projectId().value().toString();
-        //  System.out.println("onProjectInitializedEvent > "+teamId);
         SagaLifecycle.associateWith("projectId", id);
-
-        //SagaLifecycle.associationValues().stream()
-        //        .forEach(ass -> System.out.println("  ProjectInitializedEvent>  "+ass.getKey()+" = "+ass.getValue()));
-
     }
 
     public UUID getProjectId() {
@@ -66,22 +57,18 @@ public class ProjectApprovalSaga {
 
     @SagaEventHandler(associationProperty = "projectId", associationResolver = ProjectIdAssociationResolver.class)
     public void on(ProjectApprovementInitializedEvent event) {
+        log.info("initialized approver %s on project %s".formatted(event.approverId(), event.projectId()));
         this.projectApprovalsData.add(ProjectApprovalsData.newInstance(event.approverId()));
-        System.out.println("------------------------------------------->");
-        System.out.println("------------------------------------------->");
-        System.out.println("------------------------------------------->");
-        System.out.println(" ProjectApprovementInitializedEvent LOPPU " + this);
-        System.out.println("<-------------------------------------------");
     }
 
     @SagaEventHandler(associationProperty = "projectId", associationResolver = ProjectIdAssociationResolver.class)
     public void on(ProjectApprovedByApproverEvent approvedEvent) {
-        System.out.println("** "+approvedEvent);
+        log.info("project %s approved by %s".formatted(approvedEvent.projectId(), approvedEvent.approverId()));
         this.projectApprovalsData.stream()
                 .filter(data -> data.hasApproverId(approvedEvent.approverId()))
-                .forEach(data -> data.approve());
-        if (this.projectApprovalsData.stream().allMatch(data -> data.isApproved())) {
-            System.out.println("ALL APPROVERS CLEAR");
+                .forEach(ProjectApprovalsData::approve);
+        if (this.projectApprovalsData.stream().allMatch(ProjectApprovalsData::isApproved)) {
+            log.info("all required approvals gathered, marking project %s approved".formatted(approvedEvent.projectId()));
             commandGateway.send(new MarkProjectApprovedCommand(approvedEvent.projectId()));
             SagaLifecycle.end();
         }
@@ -89,9 +76,10 @@ public class ProjectApprovalSaga {
 
     @SagaEventHandler(associationProperty = "projectId", associationResolver = ProjectIdAssociationResolver.class)
     public void on(ProjectRejectedByApproverEvent rejectedEvent) {
+        log.info("project %s rejected by %s".formatted(rejectedEvent.projectId(), rejectedEvent.approverId()));
         this.projectApprovalsData.stream()
                 .filter(data -> data.hasApproverId(rejectedEvent.approverId()))
-                .forEach(data -> data.reject());
+                .forEach(ProjectApprovalsData::reject);
         SagaLifecycle.end();
     }
 
