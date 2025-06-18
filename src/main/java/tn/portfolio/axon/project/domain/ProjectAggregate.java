@@ -32,7 +32,7 @@ public class ProjectAggregate {
     private TimeEstimation currentTotalEstimation;
     private ProjectStatus status;
     private List<ProjectTask> tasks;
-
+    private List<ApproverId> approvers;
     public ProjectAggregate() {
     }
 
@@ -103,11 +103,12 @@ public class ProjectAggregate {
         this.status = PLANNED;
         this.currentTotalEstimation = TimeEstimation.zeroEstimation();
         this.tasks = List.of();
+        this.approvers = List.of();
     }
 
     @EventSourcingHandler
     public void on(ProjectApproverPlacedEvent event) {
-        //todo?
+        this.approvers = concat(approvers, event.approverId());
     }
 
     @EventSourcingHandler
