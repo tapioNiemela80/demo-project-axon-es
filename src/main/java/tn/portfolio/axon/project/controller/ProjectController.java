@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.portfolio.axon.approval.service.ApprovalService;
+import tn.portfolio.axon.approval.view.ApprovalView;
+import tn.portfolio.axon.approval.view.ApprovalViewService;
 import tn.portfolio.axon.common.domain.ProjectId;
 import tn.portfolio.axon.project.domain.ApproverId;
 import tn.portfolio.axon.project.service.ProjectService;
@@ -23,11 +25,13 @@ public class ProjectController {
     private final ProjectService projectService;
     private final ApprovalService approvalService;
     private final ProjectViewService projectViewService;
+    private final ApprovalViewService approvalViewService;
 
-    public ProjectController(ProjectService projectService, ApprovalService approvalService, ProjectViewService projectViewService) {
+    public ProjectController(ProjectService projectService, ApprovalService approvalService, ProjectViewService projectViewService, ApprovalViewService approvalViewService) {
         this.projectService = projectService;
         this.approvalService = approvalService;
         this.projectViewService = projectViewService;
+        this.approvalViewService = approvalViewService;
     }
 
     @PostMapping
@@ -63,6 +67,11 @@ public class ProjectController {
             return approvalService.reject(new ProjectId(projectId), new ApproverId(approverId), request.reason())
                     .thenApply(id -> ResponseEntity.noContent().build());
         }
+    }
+
+    @GetMapping("/{projectId}/approvals")
+    public List<ApprovalView> findApprovalStatus(@PathVariable UUID projectId){
+        return approvalViewService.findApprovalStatusOfProject(projectId);
     }
 
     @GetMapping
