@@ -50,8 +50,8 @@ class ProjectServiceTest {
 
     @Test
     void shouldInitializeProjectSuccessfully() {
-        var projectId = new ProjectId(UUID.fromString("00000000-0000-0000-0000-000000000001"));
-        var approverId = new ApproverId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
+        var projectId = new ProjectId(UUID.randomUUID());
+        var approverId = new ApproverId(UUID.randomUUID());
         var input = new ProjectInput(
                 "My Project",
                 "Cool project description",
@@ -87,8 +87,8 @@ class ProjectServiceTest {
 
     @Test
     void shouldAddTaskToProjectSuccessfully() {
-        var projectId = new ProjectId(UUID.fromString("00000000-0000-0000-0000-000000000003"));
-        var taskId = new ProjectTaskId(UUID.fromString("00000000-0000-0000-0000-000000000004"));
+        var projectId = new ProjectId(UUID.randomUUID());
+        var taskId = new ProjectTaskId(UUID.randomUUID());
         var estimation = new tn.portfolio.axon.project.controller.TimeEstimation(3, 30);
 
         when(idService.newProjectTaskId()).thenReturn(taskId);
@@ -139,11 +139,11 @@ class ProjectServiceTest {
     }
     @Test
     void shouldCompleteTaskWhenProjectFound() {
-        var teamTaskId = new TeamTaskId(UUID.fromString("00000000-0000-0000-0000-000000000009"));
-        var teamId = new TeamId(UUID.fromString("00000000-0000-0000-0000-000000000010"));
-        var projectTaskId = new ProjectTaskId(UUID.fromString("00000000-0000-0000-0000-000000000009"));
+        var teamTaskId = new TeamTaskId(UUID.randomUUID());
+        var teamId = new TeamId(UUID.randomUUID());
+        var projectTaskId = new ProjectTaskId(UUID.randomUUID());
         var actualTime = new ActualSpentTime(1, 0);
-        var projectId = new ProjectId(UUID.fromString("00000000-0000-0000-0000-000000000008"));
+        var projectId = new ProjectId(UUID.randomUUID());
         var project = mock(Project.class);
 
         when(project.getId()).thenReturn(projectId);
@@ -161,13 +161,13 @@ class ProjectServiceTest {
 
     @Test
     void shouldNotSendCommandIfProjectNotFoundOnComplete() {
-        var teamTaskId = new TeamTaskId(UUID.fromString("00000000-0000-0000-0000-000000000009"));
-        var teamId = new TeamId(UUID.fromString("00000000-0000-0000-0000-000000000010"));
-        var projectTaskId = new ProjectTaskId(UUID.fromString("00000000-0000-0000-0000-000000000009"));
+        var teamTaskId = new TeamTaskId(UUID.randomUUID());
+        var teamId = new TeamId(UUID.randomUUID());
+        var projectTaskId = new ProjectTaskId(UUID.randomUUID());
         var actualTime = new ActualSpentTime(1, 0);
         var event = new TeamTaskCompletedEvent(teamId, teamTaskId, projectTaskId, actualTime);
 
-        when(projectRepository.findProjectByTaskId(teamTaskId.value())).thenReturn(Optional.empty());
+        when(projectRepository.findProjectByTaskId(projectTaskId.value())).thenReturn(Optional.empty());
 
         underTest.completeTask(event);
 
