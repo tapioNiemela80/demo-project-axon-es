@@ -62,7 +62,7 @@ public class TeamProjection {
 
     @EventHandler
     @Transactional
-    public void on(TaskCompletedEvent event) {
+    public void on(TeamTaskCompletedEvent event) {
         var actualTimeSpent = event.actualTimeSpent();
         teams.findByIdWithMembersAndTasks(event.teamId().value())
                 .ifPresent(team -> team.markCompleted(event.teamTaskId(), actualTimeSpent));

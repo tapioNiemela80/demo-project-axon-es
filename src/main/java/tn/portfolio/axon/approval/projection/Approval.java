@@ -40,6 +40,18 @@ public class Approval {
         return new Approval(id, approverId, projectId, name, email, projectRole);
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public UUID getApproverId() {
+        return approverId;
+    }
+
+    public UUID getId(){
+        return id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,5 +78,16 @@ public class Approval {
                 ", decisionDate=" + decisionDate +
                 ", decisionReason='" + decisionReason + '\'' +
                 '}';
+    }
+
+    void markApproved(LocalDateTime when) {
+        this.approvalStatus = "APPROVED";
+        this.decisionDate = when;
+    }
+
+    void markRejected(LocalDateTime when, String reason) {
+        this.approvalStatus = "REJECTED";
+        this.decisionDate = when;
+        this.decisionReason = reason;
     }
 }

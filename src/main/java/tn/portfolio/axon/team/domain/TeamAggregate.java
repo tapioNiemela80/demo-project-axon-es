@@ -66,7 +66,7 @@ public class TeamAggregate {
     public void on(MarkTaskCompletedCommand cmd){
         TeamTask task = getTask(cmd.taskId());
         task.verifyCanBeCompleted();
-        apply(new TaskCompletedEvent(cmd.id(), cmd.taskId(), task.getOriginalTaskId(), cmd.actualSpentTime()));
+        apply(new TeamTaskCompletedEvent(cmd.id(), cmd.taskId(), task.getOriginalTaskId(), cmd.actualSpentTime()));
     }
 
     @CommandHandler
@@ -145,7 +145,7 @@ public class TeamAggregate {
     }
 
     @EventSourcingHandler
-    public void on(TaskCompletedEvent event){
+    public void on(TeamTaskCompletedEvent event){
         this.tasks = tasks.stream().map((markCompleted(event.teamTaskId(), event.actualTimeSpent()))).toList();
     }
 

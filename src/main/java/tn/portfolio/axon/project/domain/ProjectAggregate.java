@@ -4,21 +4,20 @@ import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
+import tn.portfolio.axon.project.command.*;
 import tn.portfolio.axon.common.domain.ActualSpentTime;
 import tn.portfolio.axon.common.domain.ProjectId;
-import tn.portfolio.axon.project.command.AddTaskCommand;
-import tn.portfolio.axon.project.command.ApproverCommandDto;
-import tn.portfolio.axon.project.command.CompleteTaskCommand;
-import tn.portfolio.axon.project.command.InitializeProjectCommand;
 import tn.portfolio.axon.project.event.*;
+import tn.portfolio.axon.project.event.ProjectWasApprovedEvent;
+import tn.portfolio.axon.project.event.ProjectWasRejectedEvent;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
+import static tn.portfolio.axon.project.domain.ProjectStatus.COMPLETED;
 import static tn.portfolio.axon.project.domain.ProjectStatus.PLANNED;
 
 @Aggregate
@@ -78,6 +77,22 @@ public class ProjectAggregate {
         apply(new ProjectTaskCompletedEvent(projectId, completeTask.taskId(), completeTask.actualSpentTime()));
     }
 
+    @CommandHandler
+    public void on(MarkProjectApprovedCommand cmd) {
+        if (status != COMPLETED) {
+            throw new ProjectNeedsToBeCompletedBeforeApprovalOrRejectionException(projectId);
+        }
+        apply(new ProjectWasApprovedEvent(projectId));
+    }
+
+    @CommandHandler
+    public void on(MarkProjectRejectedCommand cmd) {
+        if (status != COMPLETED) {
+            throw new ProjectNeedsToBeCompletedBeforeApprovalOrRejectionException(projectId);
+        }
+        apply(new ProjectWasRejectedEvent(projectId));
+    }
+
     @EventSourcingHandler
     public void on(ProjectInitializedEvent event) {
         this.projectId = event.projectId();
@@ -96,24 +111,39 @@ public class ProjectAggregate {
     }
 
     @EventSourcingHandler
+    public void on(ProjectWasApprovedEvent event) {
+        status = ProjectStatus.APPROVED;
+    }
+
+    @EventSourcingHandler
+    public void on(ProjectWasRejectedEvent event) {
+        status = ProjectStatus.REJECTED;
+    }
+
+    @EventSourcingHandler
     public void on(TaskAddedToProjectEvent event) {
         this.tasks = concat(tasks, ProjectTask.from(event));
         this.currentTotalEstimation = this.currentTotalEstimation.add(event.estimation());
     }
 
     @EventSourcingHandler
-    public void on(ProjectTaskCompletedEvent event){
+    public void on(ProjectTaskCompletedEvent event) {
         this.tasks = tasks.stream()
                 .map(processTask(event.taskId(), event.actualSpentTime()))
                 .toList();
-        if(tasks.stream().allMatch(ProjectTask::isComplete)){
-            apply(new ProjectCompletedEvent(projectId));
+        if (tasks.stream().allMatch(ProjectTask::isComplete)) {
+            apply(new ProjectCompletedEvent(projectId, name));
         }
     }
 
-    private Function<ProjectTask, ProjectTask> processTask(ProjectTaskId projectTaskId, ActualSpentTime actualSpentTime){
+    @EventSourcingHandler
+    public void on(ProjectCompletedEvent event) {
+        status = COMPLETED;
+    }
+
+    private Function<ProjectTask, ProjectTask> processTask(ProjectTaskId projectTaskId, ActualSpentTime actualSpentTime) {
         return task -> {
-            if(task.hasId(projectTaskId)){
+            if (task.hasId(projectTaskId)) {
                 return task.complete(actualSpentTime);
             }
             return task;

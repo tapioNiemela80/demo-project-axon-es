@@ -7,13 +7,9 @@ import org.axonframework.eventhandling.Timestamp;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tn.portfolio.axon.common.service.DateService;
-import tn.portfolio.axon.project.event.ProjectCompletedEvent;
-import tn.portfolio.axon.project.event.ProjectInitializedEvent;
-import tn.portfolio.axon.project.event.ProjectTaskCompletedEvent;
-import tn.portfolio.axon.project.event.TaskAddedToProjectEvent;
+import tn.portfolio.axon.project.event.*;
 
 import java.time.Instant;
-import java.util.UUID;
 
 @Component
 @ProcessingGroup("project-projection")
@@ -34,7 +30,7 @@ public class ProjectProjection {
     @EventHandler
     public void on(ProjectInitializedEvent event, @Timestamp Instant when) {
         Project project = new Project(
-                event.projectId().value(),
+                event.projectId(),
                 event.name(),
                 event.description(),
                 dateService.toLocalDateTime(when),
@@ -47,13 +43,34 @@ public class ProjectProjection {
     @Transactional
     public void on(TaskAddedToProjectEvent event) {
         projects.findByIdWithTasks(event.projectId().value())
-                .ifPresent(project -> project.addTask(event.taskId().value(), event.name(), event.description(), event.estimation()));
+                .ifPresent(project -> project.addTask(event.taskId(), event.name(), event.description(), event.estimation()));
     }
 
     @EventHandler
     @Transactional
     public void on(ProjectTaskCompletedEvent event) {
         projects.findByIdWithTasks(event.projectId().value())
-                .ifPresent(project -> project.markCompleted(event.taskId().value(), event.actualSpentTime()));
+                .ifPresent(project -> project.markTaskCompleted(event.taskId(), event.actualSpentTime()));
+    }
+
+    @EventHandler
+    @Transactional
+    public void on(ProjectCompletedEvent event) {
+        projects.findByIdWithTasks(event.projectId().value())
+                .ifPresent(project -> project.markCompleted());
+    }
+
+    @EventHandler
+    @Transactional
+    public void on(ProjectWasApprovedEvent event) {
+        projects.findByIdWithTasks(event.projectId().value())
+                .ifPresent(project -> project.markApproved());
+    }
+
+    @EventHandler
+    @Transactional
+    public void on(ProjectWasRejectedEvent event) {
+        projects.findByIdWithTasks(event.projectId().value())
+                .ifPresent(project -> project.markRejected());
     }
 }

@@ -2,11 +2,16 @@ package tn.portfolio.axon.project.projection;
 
 import jakarta.persistence.*;
 import tn.portfolio.axon.common.domain.ActualSpentTime;
+import tn.portfolio.axon.common.domain.ProjectId;
+import tn.portfolio.axon.project.domain.ProjectTaskId;
 import tn.portfolio.axon.project.domain.TimeEstimation;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "projects", schema = "project_demo_cqrs")
@@ -32,8 +37,8 @@ public class Project {
         //for jpa
     }
 
-    public Project(UUID id, String name, String description, LocalDateTime createdAt, LocalDate plannedEndDate, TimeEstimation estimation) {
-        this.id = id;
+    public Project(ProjectId id, String name, String description, LocalDateTime createdAt, LocalDate plannedEndDate, TimeEstimation estimation) {
+        this.id = id.value();
         this.name = name;
         this.description = description;
         this.createdAt = createdAt;
@@ -41,21 +46,30 @@ public class Project {
         this.initialEstimatedTimeHours = estimation.getHours();
         this.initialEstimatedTimeMinutes = estimation.getMinutes();
     }
-    public void addTask(UUID id, String title, String description, TimeEstimation estimation) {
+    public void addTask(ProjectTaskId id, String title, String description, TimeEstimation estimation) {
         tasks.add(ProjectTask.newInstance(this, id, title, description, estimation));
     }
 
-    public Optional<ProjectTaskSnapshot> findTask(UUID projectTaskId){
-        return tasks.stream()
-                .filter(task -> task.hasId(projectTaskId))
-                .map(task -> task.toProjectTaskSnapshot(this.id))
-                .findFirst();
-    }
-
-    public void markCompleted(UUID taskId, ActualSpentTime actualSpentTime){
+    public void markTaskCompleted(ProjectTaskId taskId, ActualSpentTime actualSpentTime){
         tasks.stream()
                 .filter(task -> task.hasId(taskId))
                 .forEach(task -> task.markCompleted(actualSpentTime));
+    }
+
+    public void markCompleted() {
+        this.status ="COMPLETED";
+    }
+
+    public ProjectId getId() {
+        return new ProjectId(id);
+    }
+
+    public void markApproved() {
+        this.status = "APPROVED";
+    }
+
+    public void markRejected() {
+        this.status = "REJECTED";
     }
 
     @Override

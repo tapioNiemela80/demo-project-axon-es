@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import tn.portfolio.axon.approval.service.ApprovalNotFoundException;
 import tn.portfolio.axon.project.domain.ProjectAlreadyCompletedException;
 import tn.portfolio.axon.project.domain.ProjectTimeEstimationWouldBeExceededException;
 import tn.portfolio.axon.project.domain.UnknownProjectIdException;
@@ -12,6 +13,13 @@ import tn.portfolio.axon.team.domain.*;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
+
+    @ExceptionHandler(ApprovalNotFoundException.class)
+    public ResponseEntity<String> handleApprovalNotFoundException(ApprovalNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage());
+    }
 
     @ExceptionHandler(UnknownProjectIdException.class)
     public ResponseEntity<String> handleUnknownProjectIdException(UnknownProjectIdException ex) {

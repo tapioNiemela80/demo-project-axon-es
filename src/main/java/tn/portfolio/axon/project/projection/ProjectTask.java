@@ -44,12 +44,12 @@ class ProjectTask {
         this.project = project;
     }
 
-    static ProjectTask newInstance(Project project, UUID id, String title, String description, TimeEstimation estimation){
-        return new ProjectTask(id, title, description, estimation.getHours(), estimation.getMinutes(), "INCOMPLETE", project);
+    static ProjectTask newInstance(Project project, ProjectTaskId id, String title, String description, TimeEstimation estimation){
+        return new ProjectTask(id.value(), title, description, estimation.getHours(), estimation.getMinutes(), "INCOMPLETE", project);
     }
 
-    boolean hasId(UUID taskId) {
-        return id.equals(taskId);
+    boolean hasId(ProjectTaskId taskId) {
+        return id.equals(taskId.value());
     }
 
     void markCompleted(ActualSpentTime actualSpentTime) {

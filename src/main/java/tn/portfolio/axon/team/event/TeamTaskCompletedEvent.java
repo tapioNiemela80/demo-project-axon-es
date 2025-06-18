@@ -5,5 +5,5 @@ import tn.portfolio.axon.project.domain.ProjectTaskId;
 import tn.portfolio.axon.team.domain.TeamId;
 import tn.portfolio.axon.team.domain.TeamTaskId;
 
-public record TaskCompletedEvent(TeamId teamId, TeamTaskId teamTaskId, ProjectTaskId projectTaskId, ActualSpentTime actualTimeSpent) {
+public record TeamTaskCompletedEvent(TeamId teamId, TeamTaskId teamTaskId, ProjectTaskId projectTaskId, ActualSpentTime actualTimeSpent) {
 }
