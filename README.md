@@ -1,6 +1,6 @@
 # Portfolio: Kevyt projektinhallintamalli käyttäen Event Sourcing(ES) ja Axon-frameworkkia
 
-Tämä on esimerkki kevytprojektinhallintamallista, jossa tiimit ja projektit toimivat domain-aggregaatteina. Projektin tavoitteena on havainnollistaa domain-keskeistä arkkitehtuuria, jossa liiketoimintasäännöt asuvat aggregaateissa, ei serviceissä. 
+Tämä on esimerkki kevytprojektinhallintamallista, jossa tiimit ja projektit ja hyväksyjät toimivat domain-aggregaatteina. Projektin tavoitteena on havainnollistaa domain-keskeistä arkkitehtuuria, jossa liiketoimintasäännöt asuvat aggregaateissa, ei serviceissä. 
 
 
 ## Tavoite
@@ -44,7 +44,7 @@ Itse sovellus käynnistetään ajamalla komento ```mvn spring-boot:run```
 - **Team**: Omistaa tiimin jäsenet ja vastaa tehtävien hallinnasta.
 - **ProjectTask**: On osa projektisuunnittelua. Se määrittää mitä pitää tehdä ja kuinka paljon työtä siihen on alun perin arvioitu.
 - **TeamTask**: Edustaa sitä, miten tiimi toteuttaa projektitehtävän: kuka tekee sen, missä vaiheessa se on, ja paljonko todellista aikaa kului.
-- **Approval**: Kun projektin kaikki tehtävät ovat valmistuneet, lähtee sähköpostia projektin hyväksyjille, heidän vastuullaan on käydä joko hyväksymässä tai hylkäämässä projekti
+- **Approval**: Kun projektin kaikki tehtävät ovat valmistuneet, lähtee sähköpostia projektin hyväksyjille, heidän vastuullaan on käydä joko hyväksymässä tai hylkäämässä projekti. (Tämä demonstroi ns. long running prosessia)
 
 ## Value Objectit
 
@@ -113,8 +113,9 @@ Projekti käyttää Axon Frameworkia CQRS:n ja Event Sourcingin toteuttamiseen:
 ## Rajoitteet ja huomiot
 
 - Tämä projekti demonstroi lähinnä DDD ja Event sourcing (Axon) ohjelmointimallin osaamista. Siinä ei ole toteutettu mm. oikeaa autentikoitumista tai minkäänlaista käyttöliittymää.
-- Tavoitteena on ollut pitää aggregate-malli keskittyneenä toimintoihin (write). Tietojen hakeminen(read) on toteutettu erikseen suorilla SQL-kyselyillä. Read-malli on tehty kevyesti, koska se ei ole oleellinen osa demoa
 - Yksikkötestit on tehty vain kriittisille toiminnallisuuksille
+- Huom: Axon-malli sisältää projektin hyväksymisprosessin (saga), joka vaatii useita hyväksyjiä. Spring Data JDBC- ja reaktiivinen malli käyttävät yksinkertaisempaa "yhteyshenkilö" -mallia, sillä niiden tarkoituksena on demonstroida eri datamallien toimivuutta ilman hyväksyntälogiikan kompleksisuutt
+- Mallinnuksessa Approval entiteetillä on oma UUID, vaikka käytännössä projectId + approverEmail voisi toimia luonnollisena avaimena. Tämä ratkaisu valittiin yksinkertaisuuden ja testattavuuden vuoksi. Lisäksi koko approval käsite on hiukan häilyvä, koska saman toiminnallisuuden olisi voinut rakentaa project aggregaatin avulla, mutta tässä haluttiin demonstroida saga patternia
 
 ## Kehittäjä
 
