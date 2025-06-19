@@ -1,14 +1,13 @@
-# Portfolio: Kevyt projektinhallintamalli käyttäen Event Sourcing(ES) ja Axon-frameworkkia
+# Portfolio: Kevyt projektinhallintamalli käyttäen Event Sourcing(ES) ja Axon-frameworkia
 
 Tämä on esimerkki kevytprojektinhallintamallista, jossa tiimit ja projektit ja hyväksyjät toimivat domain-aggregaatteina. Projektin tavoitteena on havainnollistaa domain-keskeistä arkkitehtuuria, jossa liiketoimintasäännöt asuvat aggregaateissa, ei serviceissä. 
 
 
 ## Tavoite
 
-- Demonstroida DDD-pohjaista arkkitehtuuria yhdistettynä CQRS:ään ja Event Sourcingiin Axon Frameworkin avulla.
-- Näyttää, miten kirjoitus- (command) ja lukumallit (query) erotetaan CQRS:llä.
-- Toteuttaa Event Sourcing, jossa aggregaattien tila rekonstruoidaan tapahtumista.
-- Demonstroida ns. saga patternia eri aggregaattien ylitse
+- Demonstroida Domain-Driven Design (DDD) -pohjaista arkkitehtuuria yhdistettynä CQRS:ään (Command Query Responsibility Segregation) ja Event Sourcingiin.
+- Korostaa liiketoimintalogiikan sijoittamista aggregaatteihin palvelukerroksen sijaan.
+- Hyödyntää Axon Frameworkin kyvykkyyksiä tapahtumien hallintaan ja pitkien prosessien orkestrointiin (Saga Pattern).
 
 
 ## Teknologiat
