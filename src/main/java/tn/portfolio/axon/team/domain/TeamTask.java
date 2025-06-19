@@ -92,4 +92,16 @@ class TeamTask {
         return new TeamTask(id, projectTaskId, name, description, TeamTaskStatus.NOT_ASSIGNED, null, null);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TeamTask teamTask = (TeamTask) o;
+        return id.equals(teamTask.id) && projectTaskId.equals(teamTask.projectTaskId) && name.equals(teamTask.name) && description.equals(teamTask.description) && status == teamTask.status && Objects.equals(assigneeId, teamTask.assigneeId) && Objects.equals(actualSpentTime, teamTask.actualSpentTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, projectTaskId, name, description, status, assigneeId, actualSpentTime);
+    }
 }

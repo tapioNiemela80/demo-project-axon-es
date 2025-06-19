@@ -1,5 +1,7 @@
 package tn.portfolio.axon.team.domain;
 
+import java.util.Objects;
+
 class TeamMember {
     private final TeamMemberId id;
 
@@ -19,5 +21,18 @@ class TeamMember {
 
     boolean hasId(TeamMemberId expected) {
         return id.equals(expected);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TeamMember that = (TeamMember) o;
+        return id.equals(that.id) && name.equals(that.name) && profession.equals(that.profession);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, profession);
     }
 }
