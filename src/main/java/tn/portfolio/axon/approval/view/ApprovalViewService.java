@@ -20,7 +20,8 @@ class ApprovalViewService {
 
     public List<ApprovalView> findApprovalStatusOfProject(UUID projectId) {
         String sql = """
-                SELECT a.name, a.email, a.project_role, a.approval_status as approval_status,p.id as project_id, p.name as project_name
+                SELECT a.name, a.email, a.project_role, a.approval_status as approval_status, a.decision_date, a.decision_reason,
+                p.id as project_id, p.name as project_name
                 FROM approvals a
                 LEFT JOIN projects p on a.project_id = p.id
                 WHERE p.id = :projectId
@@ -31,6 +32,7 @@ class ApprovalViewService {
     private Function<EntityRecord, ApprovalView> mapper() {
         return r -> new ApprovalView(r.getString("name"), r.getString("email"),
                 r.getString("project_role"), r.getString("approval_status"),
+                r.getLocalDateTime("decision_date"), r.getString("decision_reason"),
                 r.getUUID("project_id"), r.getString("project_name"));
     }
 

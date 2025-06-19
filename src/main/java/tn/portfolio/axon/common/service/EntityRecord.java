@@ -2,6 +2,8 @@ package tn.portfolio.axon.common.service;
 
 import jakarta.persistence.Tuple;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class EntityRecord {
@@ -21,6 +23,14 @@ public class EntityRecord {
 
     public Integer getInteger(String key){
         return data.get(key, Integer.class);
+    }
+
+    public LocalDateTime getLocalDateTime(String key){
+        Timestamp ts = data.get(key, Timestamp.class);
+        if(ts == null){
+            return null;
+        }
+        return ts.toLocalDateTime();
     }
 
 }
