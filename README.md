@@ -122,5 +122,4 @@ Projekti käyttää Axon Frameworkia CQRS:n ja Event Sourcingin toteuttamiseen:
 - Domain Driven Design (aggregaatit, säännöt, eventit)
 - Axon ja event sourcing
 - Java + Spring Boot + Spring JPA
-- Testivetoisuus
 - Käytännöllinen REST-rajapinta
