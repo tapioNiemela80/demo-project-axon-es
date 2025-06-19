@@ -112,7 +112,7 @@ Projekti käyttää Axon Frameworkia CQRS:n ja Event Sourcingin toteuttamiseen:
 ## Rajoitteet ja huomiot
 
 - Tämä projekti demonstroi lähinnä DDD ja Event sourcing (Axon) ohjelmointimallin osaamista. Siinä ei ole toteutettu mm. oikeaa autentikoitumista tai minkäänlaista käyttöliittymää.
-- Yksikkötestit on tehty vain kriittisille toiminnallisuuksille
+- Yksikkötestit on tehty vain demonstroimaan AggregateTestFixture:n käyttöä
 - Huom: Axon-malli sisältää projektin hyväksymisprosessin (saga), joka vaatii useita hyväksyjiä. Spring Data JDBC- ja reaktiivinen malli käyttävät yksinkertaisempaa "yhteyshenkilö" -mallia, sillä niiden tarkoituksena on demonstroida eri datamallien toimivuutta ilman hyväksyntälogiikan kompleksisuutt
 - Mallinnuksessa Approval entiteetillä on oma UUID, vaikka käytännössä projectId + approverEmail voisi toimia luonnollisena avaimena. Tämä ratkaisu valittiin yksinkertaisuuden ja testattavuuden vuoksi. Lisäksi koko approval käsite on hiukan häilyvä, koska saman toiminnallisuuden olisi voinut rakentaa project aggregaatin avulla, mutta tässä haluttiin demonstroida saga patternia
 - Sovelluksessa on pieniä puutteita, esimerkiksi Objects.requireNonNull voisi olla hyvä lisä esim command-recordien kentille
