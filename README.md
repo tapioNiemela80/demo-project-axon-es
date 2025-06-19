@@ -88,16 +88,19 @@ Projekti käyttää Axon Frameworkia CQRS:n ja Event Sourcingin toteuttamiseen:
 ### Merkitse taski valmiiksi
 ```curl --location 'curl --location 'http://localhost:8080/teams/6c63a769-d65e-4e5b-899f-8cf8094e3cc8/tasks/693ea04e-1baf-4d27-bf90-6ba6eb74aa31/complete' --header 'Content-Type: application/json' --data '{"hours":8,"minutes":33}'```
 
+### Unassignoi task
+```curl --location --request POST 'http://localhost:8080/teams/6c63a769-d65e-4e5b-899f-8cf8094e3cc8/tasks/10b6d2b1-6c7e-4dda-9ccd-c71d9452528a/unassign' --data ''```
+### Poista annettu task tiimiltä
+```curl --location --request DELETE 'http://localhost:8080/teams/6c63a769-d65e-4e5b-899f-8cf8094e3cc8/tasks/10b6d2b1-6c7e-4dda-9ccd-c71d9452528a'```
+
 ### Hyväksy projekti
 ```curl --location 'http://localhost:8080/projects/c9db054a-b209-4450-a5a9-3c66bf9be4a3/approvals/a1d87f5b-dc0f-41bb-a645-331668a3e7ba' --header 'Content-Type: application/json' --data '{"approved":true,"reason":""}'```
 
 ### Hylkää projekti
 ```curl --location 'http://localhost:8080/projects/c9db054a-b209-4450-a5a9-3c66bf9be4a3/approvals/91712f21-f9e3-4f57-a3dc-c84d75b1d051' --header 'Content-Type: application/json' --data '{"approved":false,"reason":"not enough tests"}''```
 
-### Unassignoi task
-```curl --location --request POST 'http://localhost:8080/teams/6c63a769-d65e-4e5b-899f-8cf8094e3cc8/tasks/10b6d2b1-6c7e-4dda-9ccd-c71d9452528a/unassign' --data ''```
-### Poista annettu task tiimiltä
-```curl --location --request DELETE 'http://localhost:8080/teams/6c63a769-d65e-4e5b-899f-8cf8094e3cc8/tasks/10b6d2b1-6c7e-4dda-9ccd-c71d9452528a'```
+### Hae hyväksynnät projektille
+```curl --location 'http://localhost:8080/projects/c9db054a-b209-4450-a5a9-3c66bf9be4a3/approvals'```
 
 ### Hae annettu projekti
 ```curl --location 'http://localhost:8080/projects/c9db054a-b209-4450-a5a9-3c66bf9be4a3' --data ''```
@@ -105,14 +108,11 @@ Projekti käyttää Axon Frameworkia CQRS:n ja Event Sourcingin toteuttamiseen:
 ### Hae annettu tiimi
 ```curl --location 'http://localhost:8080/teams/6c63a769-d65e-4e5b-899f-8cf8094e3cc8'```
 
-### Hae hyväksynnät projektille
-```curl --location 'http://localhost:8080/projects/c9db054a-b209-4450-a5a9-3c66bf9be4a3/approvals'```
-
 ## Rajoitteet ja huomiot
 
 - Tämä projekti demonstroi lähinnä DDD ja Event sourcing (Axon) ohjelmointimallin osaamista. Siinä ei ole toteutettu mm. oikeaa autentikoitumista tai minkäänlaista käyttöliittymää.
 - Yksikkötestit on tehty vain demonstroimaan AggregateTestFixture:n käyttöä
-- Huom: Axon-malli sisältää projektin hyväksymisprosessin (saga), joka vaatii useita hyväksyjiä. Spring Data JDBC- ja reaktiivinen malli käyttävät yksinkertaisempaa "yhteyshenkilö" -mallia, sillä niiden tarkoituksena on demonstroida eri datamallien toimivuutta ilman hyväksyntälogiikan kompleksisuutt
+- Huom: Axon-malli sisältää projektin hyväksymisprosessin (saga), joka vaatii useita hyväksyjiä. [Spring Data JDBC](https://github.com/tapioNiemela80/demo-project-spring-data-jdbc)- ja [reaktiivinen malli](https://github.com/tapioNiemela80/demo-project-reactive) käyttävät yksinkertaisempaa "yhteyshenkilö" -mallia, sillä niiden tarkoituksena on demonstroida eri datamallien toimivuutta ilman hyväksyntälogiikan kompleksisuutta
 - Mallinnuksessa Approval entiteetillä on oma UUID, vaikka käytännössä projectId + approverEmail voisi toimia luonnollisena avaimena. Tämä ratkaisu valittiin yksinkertaisuuden ja testattavuuden vuoksi. Lisäksi koko approval käsite on hiukan häilyvä, koska saman toiminnallisuuden olisi voinut rakentaa project aggregaatin avulla, mutta tässä haluttiin demonstroida saga patternia
 - Sovelluksessa on pieniä puutteita, esimerkiksi Objects.requireNonNull voisi olla hyvä lisä esim command-recordien kentille
 
