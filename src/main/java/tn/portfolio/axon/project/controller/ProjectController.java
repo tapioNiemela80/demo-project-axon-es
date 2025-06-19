@@ -21,7 +21,6 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping("/projects")
 public class ProjectController {
-
     private final ProjectService projectService;
     private final ApprovalService approvalService;
     private final ProjectViewService projectViewService;
