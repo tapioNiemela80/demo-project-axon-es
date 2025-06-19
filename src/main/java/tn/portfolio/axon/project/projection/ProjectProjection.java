@@ -71,6 +71,8 @@ public class ProjectProjection {
     @Transactional
     public void on(ProjectWasRejectedEvent event) {
         projects.findByIdWithTasks(event.projectId().value())
-                .ifPresent(project -> project.markRejected());
+                .ifPresent(project -> {
+                    System.out.println(project.getId()+" "+event);
+                        project.markRejected();});
     }
 }

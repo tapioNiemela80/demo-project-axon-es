@@ -45,7 +45,7 @@ public class TeamController {
     public CompletableFuture<ResponseEntity<Void>> create(@RequestBody TeamInput teamInput) {
         return teamService.addTeam(teamInput.name())
                 .thenApply(TeamId::value)
-                .thenApply(id -> uri("teams/" + id))
+                .thenApply(id -> uri("/teams/" + id))
                 .thenApply(this::path);
     }
 
@@ -54,7 +54,7 @@ public class TeamController {
     public CompletableFuture<ResponseEntity<Void>> addMember(@PathVariable UUID teamId, @RequestBody MemberInput memberInput) {
         return teamService.addTeamMember(new TeamId(teamId), memberInput.name(), memberInput.profession())
                 .thenApply(TeamMemberId::value)
-                .thenApply(id -> uri("teams/" + teamId + "/members/" + id))
+                .thenApply(id -> uri("/teams/" + teamId + "/members/" + id))
                 .thenApply(this::path);
     }
 
@@ -63,7 +63,7 @@ public class TeamController {
     public CompletableFuture<ResponseEntity<Void>> addTask(@PathVariable UUID teamId, @PathVariable UUID projectTaskId) {
         return teamService.addTaskToTeam(new TeamId(teamId), new ProjectTaskId(projectTaskId))
                 .thenApply(TeamTaskId::value)
-                .thenApply(id -> uri("teams/" + teamId + "/tasks/" + id))
+                .thenApply(id -> uri("/teams/" + teamId + "/tasks/" + id))
                 .thenApply(this::path);
     }
 

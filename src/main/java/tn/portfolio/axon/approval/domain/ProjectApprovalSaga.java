@@ -12,6 +12,7 @@ import tn.portfolio.axon.approval.event.ProjectApprovedByApproverEvent;
 import tn.portfolio.axon.approval.event.ProjectApprovementInitializedEvent;
 import tn.portfolio.axon.approval.event.ProjectRejectedByApproverEvent;
 import tn.portfolio.axon.project.command.MarkProjectApprovedCommand;
+import tn.portfolio.axon.project.command.MarkProjectRejectedCommand;
 import tn.portfolio.axon.project.event.ProjectInitializedEvent;
 
 import java.util.ArrayList;
@@ -80,6 +81,7 @@ public class ProjectApprovalSaga {
         this.projectApprovalsData.stream()
                 .filter(data -> data.hasApproverId(rejectedEvent.approverId()))
                 .forEach(ProjectApprovalsData::reject);
+        commandGateway.send(new MarkProjectRejectedCommand(rejectedEvent.projectId()));
         SagaLifecycle.end();
     }
 

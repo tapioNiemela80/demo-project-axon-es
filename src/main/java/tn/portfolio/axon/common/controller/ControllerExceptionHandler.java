@@ -22,6 +22,7 @@ public class ControllerExceptionHandler {
                 .body(ex.getMessage());
     }
 
+    @ExceptionHandler(ApprovalStateChangeNotAllowedException.class)
     public ResponseEntity<String> handleApprovalStateChangeNotAllowedException(ApprovalStateChangeNotAllowedException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
