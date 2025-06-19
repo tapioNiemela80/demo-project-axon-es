@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import tn.portfolio.axon.approval.domain.ApprovalStateChangeNotAllowedException;
 import tn.portfolio.axon.approval.service.ApprovalNotFoundException;
 import tn.portfolio.axon.project.domain.ProjectAlreadyCompletedException;
 import tn.portfolio.axon.project.domain.ProjectTimeEstimationWouldBeExceededException;
@@ -18,6 +19,12 @@ public class ControllerExceptionHandler {
     public ResponseEntity<String> handleApprovalNotFoundException(ApprovalNotFoundException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage());
+    }
+
+    public ResponseEntity<String> handleApprovalStateChangeNotAllowedException(ApprovalStateChangeNotAllowedException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());
     }
 

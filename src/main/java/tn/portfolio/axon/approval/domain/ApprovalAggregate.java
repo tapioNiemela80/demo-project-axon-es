@@ -22,26 +22,27 @@ public class ApprovalAggregate {
     private ApproverId approverId;
     private ProjectId projectId;
     private ApprovalStatus status;
+
     public ApprovalAggregate() {
     }
 
     @CommandHandler
-    public ApprovalAggregate(InitializeProjectApprovementCommand cmd){
-        apply(new ProjectApprovementInitializedEvent(cmd.approvalId(), cmd.approverId(), cmd.projectId(),cmd.approverName(), cmd.role(), cmd.approverEmail()));
+    public ApprovalAggregate(InitializeProjectApprovementCommand cmd) {
+        apply(new ProjectApprovementInitializedEvent(cmd.approvalId(), cmd.approverId(), cmd.projectId(), cmd.approverName(), cmd.role(), cmd.approverEmail()));
     }
 
     @CommandHandler
-    public void on(ApproveProjectByApproverCommand cmd){
-        if(status!=ApprovalStatus.PENDING){
-            throw new IllegalStateException("Cannot change approval status of %s on project %s".formatted(approverId, projectId));
+    public void on(ApproveProjectByApproverCommand cmd) {
+        if (status != ApprovalStatus.PENDING) {
+            throw new ApprovalStateChangeNotAllowedException("Cannot change approval status of %s on project %s".formatted(approverId, projectId));
         }
         apply(new ProjectApprovedByApproverEvent(cmd.projectId(), cmd.approverId()));
     }
 
     @CommandHandler
-    public void on(RejectProjectByApproverCommand cmd){
-        if(status!=ApprovalStatus.PENDING){
-            throw new IllegalStateException("Cannot change approval status of %s on project %s".formatted(approverId, projectId));
+    public void on(RejectProjectByApproverCommand cmd) {
+        if (status != ApprovalStatus.PENDING) {
+            throw new ApprovalStateChangeNotAllowedException("Cannot change approval status of %s on project %s".formatted(approverId, projectId));
         }
         apply(new ProjectRejectedByApproverEvent(cmd.projectId(), cmd.approverId(), cmd.reason()));
     }
@@ -55,12 +56,12 @@ public class ApprovalAggregate {
     }
 
     @EventSourcingHandler
-    public void on(ProjectApprovedByApproverEvent event){
+    public void on(ProjectApprovedByApproverEvent event) {
         this.status = ApprovalStatus.APPROVED;
     }
 
     @EventSourcingHandler
-    public void on(ProjectRejectedByApproverEvent event){
+    public void on(ProjectRejectedByApproverEvent event) {
         this.status = ApprovalStatus.REJECTED;
     }
 }
