@@ -60,15 +60,14 @@ Projekti käyttää Axon Frameworkia CQRS:n ja Event Sourcingin toteuttamiseen:
 - Kyselymalli (Read Side): Projektiot, kuten ProjectProjection, päivittävät lukumallin tapahtumien perusteella. 
 - ProjectApprovalSaga käynnistyy kun projekti luodaan. Projektin jokainen hyväksyjä lisätään ProjectApprovalSaga:n sisäiseen listaan tarvittavista hyväksyjistä. Kun joku hyväksyjistä hylkää projektin, saga päättyy siihen ja projekti merkitään "REJECTED". Kun kaikki hyväksyjät ovat hyväksyneet, projekti merkitään "APPROVED" ja saga päättyy
 
+
 ## REST-endpointit (esimerkit)
 
 ### Luo projekti
-```curl --location 'http://localhost:8080/projects' --header 'Content-Type: application/json' --data-raw '{"name":"ddd portfolio", "description":"using axon", "estimatedEndDate": "2026-01-01", "estimation":{"hours":10,"minutes":55}, "projectApprovers":[
-    {"name":"teppo testaaja", "email":"teppo.foo@bar.fi", "role":"QA"}, {"name":"tapio niemelä", "email":"tapio.foo@bar.com", "role":"PROJECT_MANAGER"}]}''```
+```curl --location 'http://localhost:8080/projects' --header 'Content-Type: application/json' --data-raw '{"name":"ddd portfolio", "description":"using axon", "estimatedEndDate": "2026-01-01", "estimation":{"hours":10,"minutes":55}, "projectApprovers":[{"name":"teppo testaaja", "email":"teppo.foo@bar.fi", "role":"QA"}, {"name":"tapio niemelä", "email":"tapio.foo@bar.com", "role":"PROJECT_MANAGER"}]}''```
 
 ### Lisää taski projektille
 ```curl --location 'http://localhost:8080/projects/cd8a4243-717b-4181-bb5a-83381f511920/tasks' --header 'Content-Type: application/json' --data '{"name":"java code", "description":"make java code demonstrating ddd and spring data jdbc", "estimation":{"hours":8, "minutes":0}}'```
-
 ### Lisää tiimi
 ```curl --location 'http://localhost:8080/teams' --header 'Content-Type: application/json' --data '{"name":"ddd and spring data jdbc demonstration team"}'```
 
@@ -116,12 +115,13 @@ Projekti käyttää Axon Frameworkia CQRS:n ja Event Sourcingin toteuttamiseen:
 - Yksikkötestit on tehty vain kriittisille toiminnallisuuksille
 - Huom: Axon-malli sisältää projektin hyväksymisprosessin (saga), joka vaatii useita hyväksyjiä. Spring Data JDBC- ja reaktiivinen malli käyttävät yksinkertaisempaa "yhteyshenkilö" -mallia, sillä niiden tarkoituksena on demonstroida eri datamallien toimivuutta ilman hyväksyntälogiikan kompleksisuutt
 - Mallinnuksessa Approval entiteetillä on oma UUID, vaikka käytännössä projectId + approverEmail voisi toimia luonnollisena avaimena. Tämä ratkaisu valittiin yksinkertaisuuden ja testattavuuden vuoksi. Lisäksi koko approval käsite on hiukan häilyvä, koska saman toiminnallisuuden olisi voinut rakentaa project aggregaatin avulla, mutta tässä haluttiin demonstroida saga patternia
+- Sovelluksessa on pieniä puutteita, esimerkiksi Objects.requireNonNull voisi olla hyvä lisä esim command-recordien kentille
 
 ## Kehittäjä
 
 - Toteuttanut Tapio Niemelä. Portfolio toimii todisteena osaamisesta:
+- Domain Driven Design (aggregaatit, säännöt, eventit)
 - Axon ja event sourcing
 - Java + Spring Boot + Spring JPA
-- Domain Driven Design (aggregaatit, säännöt, eventit)
 - Testivetoisuus
 - Käytännöllinen REST-rajapinta
