@@ -115,6 +115,7 @@ Projekti käyttää Axon Frameworkia CQRS:n ja Event Sourcingin toteuttamiseen:
 - Huom: Axon-malli sisältää projektin hyväksymisprosessin (saga), joka vaatii useita hyväksyjiä. [Spring Data JDBC](https://github.com/tapioNiemela80/demo-project-spring-data-jdbc)- ja [reaktiivinen malli](https://github.com/tapioNiemela80/demo-project-reactive) käyttävät yksinkertaisempaa "yhteyshenkilö" -mallia, sillä niiden tarkoituksena on demonstroida eri datamallien toimivuutta ilman hyväksyntälogiikan kompleksisuutta
 - Mallinnuksessa Approval entiteetillä on oma UUID, vaikka käytännössä projectId + approverEmail voisi toimia luonnollisena avaimena. Tämä ratkaisu valittiin yksinkertaisuuden ja testattavuuden vuoksi. Lisäksi koko approval käsite on hiukan häilyvä, koska saman toiminnallisuuden olisi voinut rakentaa project aggregaatin avulla, mutta tässä haluttiin demonstroida saga patternia
 - Sovelluksessa on pieniä puutteita, esimerkiksi Objects.requireNonNull voisi olla hyvä lisä esim command-recordien kentille
+- Sovelluksen tarkoituksena on demonstroida DDD:n, CQRS:n ja Event Sourcingin yhdistämistä käytännössä
 
 ## Kehittäjä
 
