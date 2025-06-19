@@ -99,7 +99,7 @@ Projekti käyttää Axon Frameworkia CQRS:n ja Event Sourcingin toteuttamiseen:
 ### Hylkää projekti
 ```curl --location 'http://localhost:8080/projects/c9db054a-b209-4450-a5a9-3c66bf9be4a3/approvals/91712f21-f9e3-4f57-a3dc-c84d75b1d051' --header 'Content-Type: application/json' --data '{"approved":false,"reason":"not enough tests"}''```
 
-### Hae hyväksynnät projektille
+### Hae hyväksyntätiedot annetulle projektille
 ```curl --location 'http://localhost:8080/projects/c9db054a-b209-4450-a5a9-3c66bf9be4a3/approvals'```
 
 ### Hae annettu projekti
