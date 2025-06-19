@@ -35,7 +35,7 @@ class ProjectAggregateTest {
     }
 
     @Test
-    void testInitializeProjectCommand() {
+    void initializesNewProject() {
         ApproverCommandDto approver = new ApproverCommandDto(approverId, "John Doe", ProjectRole.QA, "john@example.com");
         InitializeProjectCommand command = new InitializeProjectCommand(
                 projectId, "Test Project", "Description", estimatedEndDate, estimation, Set.of(approver)
@@ -49,7 +49,7 @@ class ProjectAggregateTest {
     }
 
     @Test
-    void testAddTaskCommand() {
+    void addsTaskToProject() {
         TaskAddedToProjectEvent event = new TaskAddedToProjectEvent(projectId, taskId, "Task Name", "Task Description", estimation);
 
         fixture.given(new ProjectInitializedEvent(projectId, "Test Project", "Description", estimatedEndDate, new TimeEstimation(20, 0)))
@@ -58,16 +58,16 @@ class ProjectAggregateTest {
     }
 
     @Test
-    void testAddTaskCommandFailsWhenEstimationExceedsOriginal() {
-        TimeEstimation largeEstimation = new TimeEstimation(30, 0); // Too large
+    void taskAddingFailsBecauseWouldExceedOriginalTimeEstimate() {
+        TimeEstimation largeEstimation = new TimeEstimation(1, 1);
 
-        fixture.given(new ProjectInitializedEvent(projectId, "Test Project", "Description", estimatedEndDate, new TimeEstimation(20, 0)))
+        fixture.given(new ProjectInitializedEvent(projectId, "Test Project", "Description", estimatedEndDate, new TimeEstimation(1, 0)))
                 .when(new AddTaskCommand(projectId, taskId, "Task Name", "Task Description", largeEstimation))
                 .expectException(ProjectTimeEstimationWouldBeExceededException.class);
     }
 
     @Test
-    void testAddTaskCommandFailsWhenProjectNotPlanned() {
+    void taskAddingFailsBecauseProjectNeedsToBeInPlannedState() {
         fixture.given(
                         new ProjectInitializedEvent(projectId, "Test Project", "Description", estimatedEndDate, estimation),
                         new TaskAddedToProjectEvent(projectId, taskId, "Task Name", "Task Description", estimation),
@@ -79,7 +79,7 @@ class ProjectAggregateTest {
     }
 
     @Test
-    void testCompleteTaskCommand() {
+    void emitsTaskCompletedAndProjectCompletedEventsWhenAllTasksCompleted() {
         ProjectTaskCompletedEvent taskCompletedEvent = new ProjectTaskCompletedEvent(projectId, taskId, actualSpentTime);
         ProjectCompletedEvent projectCompletedEvent = new ProjectCompletedEvent(projectId, "Test Project");
 
@@ -93,7 +93,7 @@ class ProjectAggregateTest {
     }
 
     @Test
-    void testCompleteOneTaskOfTwoDoesNotTriggerProjectCompletedEvent() {
+    void emitsTaskCompletedButNotProjectCompletedEventsWhenOnlySomeTasksCompleted() {
         var taskId1 = new ProjectTaskId(UUID.randomUUID());
         var taskId2 = new ProjectTaskId(UUID.randomUUID());
         ProjectInitializedEvent initEvent = new ProjectInitializedEvent(projectId, "Test Project", "Description", estimatedEndDate, new TimeEstimation(10, 0));
@@ -112,14 +112,14 @@ class ProjectAggregateTest {
     }
 
     @Test
-    void testCompleteTaskCommandFailsWhenTaskNotFound() {
+    void completeTaskFailsWhenUnknownTaskIdGiven() {
         fixture.given(new ProjectInitializedEvent(projectId, "Test Project", "Description", estimatedEndDate, estimation))
                 .when(new CompleteTaskCommand(projectId, taskId, actualSpentTime))
                 .expectException(UnknownProjectTaskIdException.class);
     }
 
     @Test
-    void testCompleteTaskCommandFailsWhenProjectNotPlanned() {
+    void completeTaskFailsWhenProjectIsNotInPlannedState() {
         fixture.given(
                         new ProjectInitializedEvent(projectId, "Test Project", "Description", estimatedEndDate, estimation),
                         new TaskAddedToProjectEvent(projectId, taskId, "Task Name", "Task Description", estimation),
@@ -131,7 +131,7 @@ class ProjectAggregateTest {
     }
 
     @Test
-    void testMarkProjectApprovedCommand() {
+    void emitsProjectWasApprovedEventWhenApproved() {
         ProjectWasApprovedEvent event = new ProjectWasApprovedEvent(projectId);
 
         fixture.given(
@@ -145,14 +145,14 @@ class ProjectAggregateTest {
     }
 
     @Test
-    void testMarkProjectApprovedCommandFailsWhenNotCompleted() {
+    void approvalFailsWhenNotInCompletedState() {
         fixture.given(new ProjectInitializedEvent(projectId, "Test Project", "Description", estimatedEndDate, estimation))
                 .when(new MarkProjectApprovedCommand(projectId))
                 .expectException(ProjectNeedsToBeCompletedBeforeApprovalOrRejectionException.class);
     }
 
     @Test
-    void testMarkProjectRejectedCommand() {
+    void emitsProjectWasRejectedEventWhenRejected() {
         ProjectWasRejectedEvent event = new ProjectWasRejectedEvent(projectId);
 
         fixture.given(
@@ -166,7 +166,7 @@ class ProjectAggregateTest {
     }
 
     @Test
-    void testMarkProjectRejectedCommandFailsWhenNotCompleted() {
+    void rejectFailsWhenNotInCompletedState() {
         fixture.given(new ProjectInitializedEvent(projectId, "Test Project", "Description", estimatedEndDate, estimation))
                 .when(new MarkProjectRejectedCommand(projectId))
                 .expectException(ProjectNeedsToBeCompletedBeforeApprovalOrRejectionException.class);

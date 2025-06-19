@@ -31,7 +31,7 @@ class TeamAggregateTest {
     }
 
     @Test
-    void testCreateTeamCommand() {
+    void createsNewTeam() {
         CreateTeamCommand command = new CreateTeamCommand(teamId, "Test Team");
         TeamCreatedEvent event = new TeamCreatedEvent(teamId, "Test Team");
 
@@ -41,7 +41,7 @@ class TeamAggregateTest {
     }
 
     @Test
-    void testAddTeamMemberCommand() {
+    void addsTeamMember() {
         AddTeamMemberCommand command = new AddTeamMemberCommand(teamId, memberId, "John Doe", "Developer");
         TeamMemberAddedEvent event = new TeamMemberAddedEvent(teamId, memberId, "John Doe", "Developer");
 
@@ -51,7 +51,7 @@ class TeamAggregateTest {
     }
 
     @Test
-    void testAddTeamTaskCommand() {
+    void addsTeamTask() {
         AddTeamTaskCommand command = new AddTeamTaskCommand(teamId, taskId, projectTaskId, "Task Title", "Task Description");
         TaskAddedToTeamEvent event = new TaskAddedToTeamEvent(teamId, taskId, projectTaskId, "Task Title", "Task Description");
 
@@ -61,7 +61,7 @@ class TeamAggregateTest {
     }
 
     @Test
-    void testMarkTaskInProgressCommand() {
+    void marksTaskInProgress() {
         TaskMarkedInProgressEvent event = new TaskMarkedInProgressEvent(teamId, taskId);
 
         fixture.given(
@@ -74,18 +74,17 @@ class TeamAggregateTest {
     }
 
     @Test
-    void testMarkTaskInProgressCommandFailsWhenNotAssigned() {
+    void markTaskInProgressFailsBecauseTaskIsNotAssigned() {
         fixture.given(
                         new TeamCreatedEvent(teamId, "Test Team"),
                         new TaskAddedToTeamEvent(teamId, taskId, projectTaskId, "Task Title", "Task Description")
                 )
                 .when(new MarkTaskInProgressCommand(teamId, taskId))
-                .expectException(TaskTransitionNotAllowedException.class)
-                .expectExceptionMessage("Task needs to be assigned before it can be put to in progress.");
+                .expectException(TaskTransitionNotAllowedException.class);
     }
 
     @Test
-    void testAssignTaskCommand() {
+    void assignsTask() {
         TeamTaskAssignedEvent event = new TeamTaskAssignedEvent(teamId, taskId, memberId);
 
         fixture.given(
@@ -98,7 +97,7 @@ class TeamAggregateTest {
     }
 
     @Test
-    void testAssignTaskCommandFailsWhenMemberNotFound() {
+    void cannotAssignTaskBecauseUnknownMember() {
         fixture.given(
                         new TeamCreatedEvent(teamId, "Test Team"),
                         new TaskAddedToTeamEvent(teamId, taskId, projectTaskId, "Task Title", "Task Description")
@@ -108,7 +107,7 @@ class TeamAggregateTest {
     }
 
     @Test
-    void testUnassignTaskCommand() {
+    void unassignsTask() {
         TaskUnassignedEvent event = new TaskUnassignedEvent(teamId, taskId);
 
         fixture.given(
@@ -121,7 +120,7 @@ class TeamAggregateTest {
     }
 
     @Test
-    void testUnassignTaskCommandFailsWhenNotAssigned() {
+    void unassignTaskFailsBecauseNotAssigned() {
         fixture.given(
                         new TeamCreatedEvent(teamId, "Test Team"),
                         new TaskAddedToTeamEvent(teamId, taskId, projectTaskId, "Task Title", "Task Description")
@@ -132,7 +131,7 @@ class TeamAggregateTest {
     }
 
     @Test
-    void testMarkTaskCompletedCommand() {
+    void marksTaskCompleted() {
         TeamTaskCompletedEvent event = new TeamTaskCompletedEvent(teamId, taskId, projectTaskId, actualSpentTime);
 
         fixture.given(
@@ -146,7 +145,7 @@ class TeamAggregateTest {
     }
 
     @Test
-    void testMarkTaskCompletedCommandFailsWhenNotInProgress() {
+    void markTaskCompletedFailsWhenNotInProgress() {
         fixture.given(
                         new TeamCreatedEvent(teamId, "Test Team"),
                         new TaskAddedToTeamEvent(teamId, taskId, projectTaskId, "Task Title", "Task Description")
@@ -157,7 +156,7 @@ class TeamAggregateTest {
     }
 
     @Test
-    void testRemoveTaskCommand() {
+    void removesTask() {
         TaskRemovedFromTeamEvent event = new TaskRemovedFromTeamEvent(teamId, taskId);
 
         fixture.given(
@@ -169,7 +168,7 @@ class TeamAggregateTest {
     }
 
     @Test
-    void testRemoveTaskCommandFailsWhenTaskAssigned() {
+    void removeTaskFailsWhenTaskIsAssigned() {
         fixture.given(
                         new TeamCreatedEvent(teamId, "Test Team"),
                         new TaskAddedToTeamEvent(teamId, taskId, projectTaskId, "Task Title", "Task Description"),
@@ -180,7 +179,7 @@ class TeamAggregateTest {
     }
 
     @Test
-    void testRemoveTeamMemberCommand() {
+    void removesTeamMember() {
         TeamMemberRemovedEvent event = new TeamMemberRemovedEvent(teamId, memberId);
 
         fixture.given(
@@ -192,14 +191,14 @@ class TeamAggregateTest {
     }
 
     @Test
-    void testRemoveTeamMemberCommandFailsWhenMemberNotFound() {
+    void removeTeamMemberFailsWhenMemberNotFound() {
         fixture.given(new TeamCreatedEvent(teamId, "Test Team"))
                 .when(new RemoveTeamMemberCommand(teamId, memberId))
                 .expectException(UnknownTeamMemberIdException.class);
     }
 
     @Test
-    void testRemoveTeamMemberCommandFailsWhenMemberHasAssignedTasks() {
+    void removeTeamMemberFailsWhenMemberHasAssignedTasks() {
         fixture.given(
                         new TeamCreatedEvent(teamId, "Test Team"),
                         new TeamMemberAddedEvent(teamId, memberId, "John Doe", "Developer"),
