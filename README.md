@@ -1,6 +1,6 @@
 # Portfolio: Kevyt projektinhallintamalli käyttäen Event Sourcing(ES) ja Axon-frameworkia
 
-Tämä on esimerkki kevytprojektinhallintamallista, jossa tiimit ja projektit ja hyväksyjät toimivat domain-aggregaatteina. Projektin tavoitteena on havainnollistaa domain-keskeistä arkkitehtuuria, jossa liiketoimintasäännöt asuvat aggregaateissa, ei serviceissä. 
+Tämä on esimerkki kevyestä projektinhallintamallista, jossa tiimit ja projektit ja hyväksyjät toimivat domain-aggregaatteina. Esimerkin tavoitteena on havainnollistaa domain-keskeistä arkkitehtuuria, jossa liiketoimintasäännöt asuvat aggregaateissa, ei serviceissä. 
 
 
 ## Tavoite
