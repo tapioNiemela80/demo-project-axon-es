@@ -10,7 +10,7 @@ import tn.portfolio.axon.approval.command.RejectProjectByApproverCommand;
 import tn.portfolio.axon.approval.event.ProjectApprovedByApproverEvent;
 import tn.portfolio.axon.approval.event.ProjectApprovementInitializedEvent;
 import tn.portfolio.axon.approval.event.ProjectRejectedByApproverEvent;
-import tn.portfolio.axon.common.domain.ProjectId;
+import tn.portfolio.axon.project.domain.ProjectId;
 import tn.portfolio.axon.project.domain.ApproverId;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;

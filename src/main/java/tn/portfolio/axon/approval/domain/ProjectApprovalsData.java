@@ -18,31 +18,31 @@ public class ProjectApprovalsData implements Serializable {
         this.approvalStatus = approvalStatus;
     }
 
-    public static ProjectApprovalsData newInstance(ApproverId approverId){
+    public static ProjectApprovalsData newInstance(ApproverId approverId) {
         return new ProjectApprovalsData(approverId, ApprovalStatus.PENDING);
     }
 
-    public void approve(){
-         approvalStatus = ApprovalStatus.APPROVED;
+    public void approve() {
+        approvalStatus = ApprovalStatus.APPROVED;
     }
 
-    public void reject(){
+    public void reject() {
         approvalStatus = ApprovalStatus.REJECTED;
     }
 
-    public boolean hasApproverId(ApproverId id){
+    public boolean hasApproverId(ApproverId id) {
         return id.equals(approverId);
     }
 
-    public boolean isApproved(){
+    public boolean isApproved() {
         return approvalStatus == ApprovalStatus.APPROVED;
     }
 
-    public boolean isRejected(){
+    public boolean isRejected() {
         return approvalStatus == ApprovalStatus.REJECTED;
     }
 
-    enum ApprovalStatus{PENDING, APPROVED, REJECTED}
+    enum ApprovalStatus {PENDING, APPROVED, REJECTED}
 
     public ApproverId getApproverId() {
         return approverId;

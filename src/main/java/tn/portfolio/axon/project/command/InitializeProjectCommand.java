@@ -1,7 +1,7 @@
 package tn.portfolio.axon.project.command;
 
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
-import tn.portfolio.axon.common.domain.ProjectId;
+import tn.portfolio.axon.project.domain.ProjectId;
 import tn.portfolio.axon.project.domain.TimeEstimation;
 
 import java.time.LocalDate;
@@ -14,4 +14,5 @@ public record InitializeProjectCommand(
         LocalDate estimatedEndDate,
         TimeEstimation estimation,
         Set<ApproverCommandDto> approvers
-) {}
+) {
+}

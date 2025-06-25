@@ -2,7 +2,7 @@ package tn.portfolio.axon.project.projection;
 
 import jakarta.persistence.*;
 import tn.portfolio.axon.common.domain.ActualSpentTime;
-import tn.portfolio.axon.common.domain.ProjectId;
+import tn.portfolio.axon.project.domain.ProjectId;
 import tn.portfolio.axon.project.domain.ProjectTaskId;
 import tn.portfolio.axon.project.domain.TimeEstimation;
 

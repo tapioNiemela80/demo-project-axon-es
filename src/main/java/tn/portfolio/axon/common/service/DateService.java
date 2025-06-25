@@ -9,7 +9,7 @@ import java.time.ZoneId;
 @Component
 public class DateService {
 
-    public LocalDateTime toLocalDateTime(Instant instant){
+    public LocalDateTime toLocalDateTime(Instant instant) {
         return LocalDateTime.ofInstant(instant, ZoneId.of("Europe/Helsinki"));
     }
 

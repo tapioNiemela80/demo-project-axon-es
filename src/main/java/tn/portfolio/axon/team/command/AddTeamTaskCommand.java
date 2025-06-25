@@ -5,5 +5,6 @@ import tn.portfolio.axon.project.domain.ProjectTaskId;
 import tn.portfolio.axon.team.domain.TeamId;
 import tn.portfolio.axon.team.domain.TeamTaskId;
 
-public record AddTeamTaskCommand(@TargetAggregateIdentifier TeamId id, TeamTaskId teamTaskId, ProjectTaskId projectTaskId, String name, String description) {
+public record AddTeamTaskCommand(@TargetAggregateIdentifier TeamId id, TeamTaskId teamTaskId,
+                                 ProjectTaskId projectTaskId, String name, String description) {
 }

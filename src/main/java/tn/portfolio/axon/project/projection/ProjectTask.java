@@ -2,7 +2,6 @@ package tn.portfolio.axon.project.projection;
 
 import jakarta.persistence.*;
 import tn.portfolio.axon.common.domain.ActualSpentTime;
-import tn.portfolio.axon.common.domain.ProjectId;
 import tn.portfolio.axon.project.domain.ProjectTaskId;
 import tn.portfolio.axon.project.domain.TimeEstimation;
 
@@ -31,9 +30,11 @@ class ProjectTask {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
-    protected ProjectTask(){
+
+    protected ProjectTask() {
         //for jpa
     }
+
     private ProjectTask(UUID id, String title, String description, int estimatedTimeHours, int estimatedTimeMinutes, String taskStatus, Project project) {
         this.id = id;
         this.title = title;
@@ -44,7 +45,7 @@ class ProjectTask {
         this.project = project;
     }
 
-    static ProjectTask newInstance(Project project, ProjectTaskId id, String title, String description, TimeEstimation estimation){
+    static ProjectTask newInstance(Project project, ProjectTaskId id, String title, String description, TimeEstimation estimation) {
         return new ProjectTask(id.value(), title, description, estimation.getHours(), estimation.getMinutes(), "INCOMPLETE", project);
     }
 
@@ -71,7 +72,4 @@ class ProjectTask {
         return id.hashCode();
     }
 
-    ProjectTaskSnapshot toProjectTaskSnapshot(UUID projectId) {
-        return new ProjectTaskSnapshot(new ProjectTaskId(this.id), new ProjectId(projectId), title, description, new TimeEstimation(estimatedTimeHours, estimatedTimeMinutes));
-    }
 }

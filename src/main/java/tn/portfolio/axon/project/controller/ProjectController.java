@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import tn.portfolio.axon.approval.service.ApprovalService;
 import tn.portfolio.axon.approval.view.ApprovalView;
 import tn.portfolio.axon.approval.view.ApprovalViewService;
-import tn.portfolio.axon.common.domain.ProjectId;
+import tn.portfolio.axon.project.domain.ProjectId;
 import tn.portfolio.axon.project.domain.ApproverId;
+import tn.portfolio.axon.project.domain.ProjectTaskId;
 import tn.portfolio.axon.project.service.ProjectService;
 import tn.portfolio.axon.project.view.ProjectView;
 import tn.portfolio.axon.project.view.ProjectViewService;
@@ -37,7 +38,7 @@ public class ProjectController {
     @ResponseStatus(HttpStatus.CREATED)
     public CompletableFuture<ResponseEntity<Void>> createProject(@RequestBody ProjectInput input) {
         return projectService.initializeProject(input)
-                .thenApply(id -> id.value())
+                .thenApply(ProjectId::value)
                 .thenApply(id -> uri("/projects/" + id))
                 .thenApply(this::path);
     }
@@ -51,7 +52,7 @@ public class ProjectController {
                         request.description(),
                         request.estimation()
                 )
-                .thenApply(id -> id.value())
+                .thenApply(ProjectTaskId::value)
                 .thenApply(taskId -> uri("/projects/" + projectId + "/tasks/" + taskId))
                 .thenApply(this::path);
     }

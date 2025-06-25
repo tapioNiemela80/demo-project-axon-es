@@ -12,7 +12,6 @@ import tn.portfolio.axon.approval.event.ProjectRejectedByApproverEvent;
 import tn.portfolio.axon.common.service.DateService;
 
 import java.time.Instant;
-import java.util.UUID;
 
 @Component
 @ProcessingGroup("approval-projection")
@@ -31,7 +30,7 @@ public class ApprovalProjection {
     }
 
     @EventHandler
-    public void on(ProjectApprovementInitializedEvent event){
+    public void on(ProjectApprovementInitializedEvent event) {
         approvals.save(Approval.newInstance(event.approvalId().value(), event.approverId().value(),
                 event.projectId().value(),
                 event.approverName(), event.approverEmail(), event.role().name()));
@@ -39,14 +38,14 @@ public class ApprovalProjection {
 
     @EventHandler
     @Transactional
-    public void on(ProjectApprovedByApproverEvent event, @Timestamp Instant when){
+    public void on(ProjectApprovedByApproverEvent event, @Timestamp Instant when) {
         approvals.findByProjectIdAndApproverId(event.projectId().value(), event.approverId().value())
                 .ifPresent(approval -> approval.markApproved(dateService.toLocalDateTime(when)));
     }
 
     @EventHandler
     @Transactional
-    public void on(ProjectRejectedByApproverEvent event, @Timestamp Instant when){
+    public void on(ProjectRejectedByApproverEvent event, @Timestamp Instant when) {
         approvals.findByProjectIdAndApproverId(event.projectId().value(), event.approverId().value())
                 .ifPresent(approval -> approval.markRejected(dateService.toLocalDateTime(when), event.reason()));
     }

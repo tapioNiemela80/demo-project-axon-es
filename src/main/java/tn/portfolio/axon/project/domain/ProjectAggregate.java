@@ -6,7 +6,6 @@ import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 import tn.portfolio.axon.project.command.*;
 import tn.portfolio.axon.common.domain.ActualSpentTime;
-import tn.portfolio.axon.common.domain.ProjectId;
 import tn.portfolio.axon.project.event.*;
 import tn.portfolio.axon.project.event.ProjectWasApprovedEvent;
 import tn.portfolio.axon.project.event.ProjectWasRejectedEvent;

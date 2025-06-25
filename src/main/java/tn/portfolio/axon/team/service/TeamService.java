@@ -29,26 +29,26 @@ public class TeamService {
         this.teams = teams;
     }
 
-    public CompletableFuture<TeamId> addTeam(String name){
+    public CompletableFuture<TeamId> addTeam(String name) {
         var teamId = idService.newTeamId();
         return commandGateway.send(new CreateTeamCommand(teamId, name));
     }
 
-    public CompletableFuture<TeamMemberId> addTeamMember(TeamId teamId, String name, String profession){
+    public CompletableFuture<TeamMemberId> addTeamMember(TeamId teamId, String name, String profession) {
         var memberId = idService.newTeamMemberId();
         return commandGateway.send(new AddTeamMemberCommand(teamId, memberId, name, profession))
                 .thenApply(id -> memberId)
                 .exceptionally(throwUnknownTeamIdExceptionIfAggregateIsMissing(teamId));
     }
 
-    public CompletableFuture<TeamMemberId> removeTeamMember(TeamId teamId, TeamMemberId memberId){
+    public CompletableFuture<TeamMemberId> removeTeamMember(TeamId teamId, TeamMemberId memberId) {
         return commandGateway.send(new RemoveTeamMemberCommand(teamId, memberId))
                 .thenApply(id -> memberId)
                 .exceptionally(throwUnknownTeamIdExceptionIfAggregateIsMissing(teamId));
     }
 
-    public CompletableFuture<TeamTaskId> addTaskToTeam(TeamId teamId, ProjectTaskId taskId){
-        if(teams.existsByProjectTaskId(taskId.value())){
+    public CompletableFuture<TeamTaskId> addTaskToTeam(TeamId teamId, ProjectTaskId taskId) {
+        if (teams.existsByProjectTaskId(taskId.value())) {
             throw new TaskAlreadyAssignedException("Task %s already assigned to some team".formatted(taskId));
         }
         var teamTaskId = idService.newTeamTaskId();
@@ -59,31 +59,31 @@ public class TeamService {
                 .exceptionally(throwUnknownTeamIdExceptionIfAggregateIsMissing(teamId));
     }
 
-    public CompletableFuture<TeamTaskId> removeTask(TeamId teamId, TeamTaskId teamTaskId){
+    public CompletableFuture<TeamTaskId> removeTask(TeamId teamId, TeamTaskId teamTaskId) {
         return commandGateway.send(new RemoveTaskCommand(teamId, teamTaskId))
                 .thenApply(id -> teamTaskId)
                 .exceptionally(throwUnknownTeamIdExceptionIfAggregateIsMissing(teamId));
     }
 
-    public CompletableFuture<TeamTaskId> assignTask(TeamId teamId, TeamTaskId taskId, TeamMemberId memberId){
-        return commandGateway.send(new AssignTaskCommand(teamId, taskId, memberId ))
+    public CompletableFuture<TeamTaskId> assignTask(TeamId teamId, TeamTaskId taskId, TeamMemberId memberId) {
+        return commandGateway.send(new AssignTaskCommand(teamId, taskId, memberId))
                 .thenApply(id -> taskId)
                 .exceptionally(throwUnknownTeamIdExceptionIfAggregateIsMissing(teamId));
     }
 
-    public CompletableFuture<TeamTaskId> unassignTask(TeamId teamId, TeamTaskId taskId){
+    public CompletableFuture<TeamTaskId> unassignTask(TeamId teamId, TeamTaskId taskId) {
         return commandGateway.send(new UnassignTaskCommand(teamId, taskId))
                 .thenApply(id -> taskId)
                 .exceptionally(throwUnknownTeamIdExceptionIfAggregateIsMissing(teamId));
     }
 
-    public CompletableFuture<TeamTaskId> markInProgress(TeamId teamId, TeamTaskId taskId){
+    public CompletableFuture<TeamTaskId> markInProgress(TeamId teamId, TeamTaskId taskId) {
         return commandGateway.send(new MarkTaskInProgressCommand(teamId, taskId))
                 .thenApply(id -> taskId)
                 .exceptionally(throwUnknownTeamIdExceptionIfAggregateIsMissing(teamId));
     }
 
-    public CompletableFuture<TeamTaskId> markTaskCompleted(TeamId teamId, TeamTaskId taskId, ActualSpentTime actualSpentTime){
+    public CompletableFuture<TeamTaskId> markTaskCompleted(TeamId teamId, TeamTaskId taskId, ActualSpentTime actualSpentTime) {
         return commandGateway.send(new MarkTaskCompletedCommand(teamId, taskId, actualSpentTime))
                 .thenApply(id -> taskId)
                 .exceptionally(throwUnknownTeamIdExceptionIfAggregateIsMissing(teamId));

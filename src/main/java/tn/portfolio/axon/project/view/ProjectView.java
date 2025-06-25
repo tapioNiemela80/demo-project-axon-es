@@ -2,6 +2,7 @@ package tn.portfolio.axon.project.view;
 
 import java.util.List;
 import java.util.UUID;
+
 public record ProjectView(UUID id,
                           String name,
                           String description,
@@ -12,6 +13,7 @@ public record ProjectView(UUID id,
     public TimeEstimate getRemainingEstimation() {
         return initialEstimation.subtract(getCompletedEstimation());
     }
+
     public TimeEstimate getCompletedEstimation() {
         return tasks.stream()
                 .filter(TaskView::isCompleted)

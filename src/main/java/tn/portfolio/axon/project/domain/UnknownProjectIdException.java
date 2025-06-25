@@ -1,14 +1,14 @@
 package tn.portfolio.axon.project.domain;
 
-import tn.portfolio.axon.common.domain.ProjectId;
+public class UnknownProjectIdException extends RuntimeException {
+    private final ProjectId projectId;
 
-import java.util.UUID;
+    public UnknownProjectIdException(ProjectId projectId) {
+        super("Unknown project teamId %s".formatted(projectId));
+        this.projectId = projectId;
+    }
 
-public class UnknownProjectIdException extends RuntimeException{
-    private final ProjectId givenId;
-
-    public UnknownProjectIdException(ProjectId givenId) {
-        super("Unknown project teamId %s".formatted(givenId));
-        this.givenId = givenId;
+    public ProjectId getProjectId() {
+        return projectId;
     }
 }

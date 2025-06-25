@@ -57,14 +57,14 @@ public class ProjectProjection {
     @Transactional
     public void on(ProjectCompletedEvent event) {
         projects.findByIdWithTasks(event.projectId().value())
-                .ifPresent(project -> project.markCompleted());
+                .ifPresent(Project::markCompleted);
     }
 
     @EventHandler
     @Transactional
     public void on(ProjectWasApprovedEvent event) {
         projects.findByIdWithTasks(event.projectId().value())
-                .ifPresent(project -> project.markApproved());
+                .ifPresent(Project::markApproved);
     }
 
     @EventHandler
@@ -72,7 +72,8 @@ public class ProjectProjection {
     public void on(ProjectWasRejectedEvent event) {
         projects.findByIdWithTasks(event.projectId().value())
                 .ifPresent(project -> {
-                    System.out.println(project.getId()+" "+event);
-                        project.markRejected();});
+                    System.out.println(project.getId() + " " + event);
+                    project.markRejected();
+                });
     }
 }

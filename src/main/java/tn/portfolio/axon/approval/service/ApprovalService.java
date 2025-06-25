@@ -10,7 +10,7 @@ import tn.portfolio.axon.approval.command.RejectProjectByApproverCommand;
 import tn.portfolio.axon.approval.domain.ApprovalId;
 import tn.portfolio.axon.approval.projection.Approval;
 import tn.portfolio.axon.approval.projection.ApprovalRepository;
-import tn.portfolio.axon.common.domain.ProjectId;
+import tn.portfolio.axon.project.domain.ProjectId;
 import tn.portfolio.axon.common.service.EmailClientService;
 import tn.portfolio.axon.common.service.EmailMessage;
 import tn.portfolio.axon.common.service.IdService;
@@ -47,14 +47,14 @@ public class ApprovalService {
         return new InitializeProjectApprovementCommand(idService.newApprovalId(), event.approverId(), event.projectId(), event.name(), event.role(), event.email());
     }
 
-    public CompletableFuture<ApprovalId> approve(ProjectId projectId, ApproverId approverId){
+    public CompletableFuture<ApprovalId> approve(ProjectId projectId, ApproverId approverId) {
         var approval = approvalRepository.findByProjectIdAndApproverId(projectId.value(), approverId.value())
                 .orElseThrow(() -> new ApprovalNotFoundException(projectId, approverId));
         var id = new ApprovalId(approval.getId());
         return commandGateway.send(new ApproveProjectByApproverCommand(id, projectId, approverId));
     }
 
-    public CompletableFuture<ApprovalId> reject(ProjectId projectId, ApproverId approverId, String reason){
+    public CompletableFuture<ApprovalId> reject(ProjectId projectId, ApproverId approverId, String reason) {
         var approval = approvalRepository.findByProjectIdAndApproverId(projectId.value(), approverId.value())
                 .orElseThrow(() -> new ApprovalNotFoundException(projectId, approverId));
         var id = new ApprovalId(approval.getId());
@@ -79,7 +79,7 @@ public class ApprovalService {
     }
 
     private String emailContent(Approval approval, ProjectCompletedEvent event) {
-        String url = "/projects/" + event.projectId().value() + "/approvals/" + approval.getApproverId(); //fake url :)
+        String url = "/projects/" + event.projectId().value() + "/approvals/" + approval.getApproverId();//in real app we would of course have authorization & authentication in place
         return "please visit %s to either accept or to reject project".formatted(url);
     }
 
