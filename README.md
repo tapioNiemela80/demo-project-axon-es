@@ -1,6 +1,6 @@
 # Portfolio: Kevyt projektinhallintamalli käyttäen Event Sourcing(ES) ja Axon-frameworkia
 
-Tämä on esimerkki kevytprojektinhallintamallista, jossa tiimit ja projektit ja hyväksyjät toimivat domain-aggregaatteina. Projektin tavoitteena on havainnollistaa domain-keskeistä arkkitehtuuria, jossa liiketoimintasäännöt asuvat aggregaateissa, ei serviceissä. 
+Tämä on esimerkki kevyestä projektinhallintamallista, jossa tiimit ja projektit ja hyväksyjät toimivat domain-aggregaatteina. Esimerkin tavoitteena on havainnollistaa domain-keskeistä arkkitehtuuria, jossa liiketoimintasäännöt asuvat aggregaateissa, ei serviceissä. 
 
 
 ## Tavoite
@@ -110,7 +110,8 @@ Projekti käyttää Axon Frameworkia CQRS:n ja Event Sourcingin toteuttamiseen:
 
 ## Rajoitteet ja huomiot
 
-- Tämä projekti demonstroi lähinnä DDD ja Event sourcing (Axon) ohjelmointimallin osaamista. Siinä ei ole toteutettu mm. oikeaa autentikoitumista tai minkäänlaista käyttöliittymää.
+- Tämä projekti demonstroi lähinnä DDD ja Event sourcing (Axon) ohjelmointimallin osaamista. Siinä ei ole toteutettu mm. oikeaa autentikoitumista tai minkäänlaista käyttöliittymää
+- Toteutuksessa on tarkoituksella valittu hieman keinotekoinen liiketoimintamalli, jonka tehtävä on antaa sopivan rikas konteksti DDD-rakenteiden esittelemiseen
 - Yksikkötestit on tehty vain demonstroimaan AggregateTestFixture:n käyttöä
 - Huom: Axon-malli sisältää projektin hyväksymisprosessin (saga), joka vaatii useita hyväksyjiä. [Spring Data JDBC](https://github.com/tapioNiemela80/demo-project-spring-data-jdbc)- ja [reaktiivinen malli](https://github.com/tapioNiemela80/demo-project-reactive) käyttävät yksinkertaisempaa "yhteyshenkilö" -mallia, sillä niiden tarkoituksena on demonstroida eri datamallien toimivuutta ilman hyväksyntälogiikan kompleksisuutta
 - Mallinnuksessa Approval entiteetillä on oma UUID, vaikka käytännössä projectId + approverEmail voisi toimia luonnollisena avaimena. Tämä ratkaisu valittiin yksinkertaisuuden ja testattavuuden vuoksi. Lisäksi koko approval käsite on hiukan häilyvä, koska saman toiminnallisuuden olisi voinut rakentaa project aggregaatin avulla, mutta tässä haluttiin demonstroida saga patternia
