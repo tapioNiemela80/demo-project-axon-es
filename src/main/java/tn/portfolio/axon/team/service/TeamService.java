@@ -19,7 +19,7 @@ import java.util.function.Function;
 public class TeamService {
     private final CommandGateway commandGateway;
     private final IdService idService;
-    private final TeamViewToProjectTaskRepository projectTasksView;
+    private final TeamViewToProjectTaskRepository projectTasksView; //this is a "view" to relevant information of project tasks, "owned" by Team
     private final TeamRepository teams;
 
     public TeamService(CommandGateway commandGateway, IdService idService, TeamViewToProjectTaskRepository projectTasksView, TeamRepository teams) {

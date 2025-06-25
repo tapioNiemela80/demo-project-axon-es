@@ -40,6 +40,7 @@ public class ApprovalService {
 
     @EventHandler
     public void on(ProjectApproverPlacedEvent event) {
+        //creates new Approval Aggregate per approver when project is created (and emits ProjectApproverPlacedEvent)
         commandGateway.send(initializeProjectApprovementCommand(event));
     }
 
