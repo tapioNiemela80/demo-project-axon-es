@@ -16,7 +16,7 @@ spring:
     locations: classpath:db/migration
 
 server:
-  port: 8080
+  port: 8082
 
 email:
   sender: demo.project@example.com
