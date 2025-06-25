@@ -6,6 +6,7 @@ import org.axonframework.modelling.command.AggregateNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import tn.portfolio.axon.project.controller.ProjectApprover;
 import tn.portfolio.axon.project.domain.ProjectId;
 import tn.portfolio.axon.common.service.IdService;
 import tn.portfolio.axon.project.command.AddTaskCommand;
@@ -43,12 +44,7 @@ public class ProjectService {
         var projectId = idService.newProjectId();
 
         Set<ApproverCommandDto> approvers = input.projectApprovers().stream()
-                .map(a -> new ApproverCommandDto(
-                        idService.newApproverId(),
-                        a.name(),
-                        a.role(),
-                        a.email()
-                ))
+                .map(this::toApproverCommandDto)
                 .collect(Collectors.toSet());
         TimeEstimation estimation = new TimeEstimation(input.estimation().hours(), input.estimation().minutes());
 
@@ -63,6 +59,15 @@ public class ProjectService {
         return commandGateway.send(cmd);
     }
 
+    private ApproverCommandDto toApproverCommandDto(ProjectApprover approver) {
+        return new ApproverCommandDto(
+                idService.newApproverId(),
+                approver.name(),
+                approver.role(),
+                approver.email()
+        );
+    }
+
     public CompletableFuture<ProjectTaskId> addTaskToProject(ProjectId projectId, String name, String description, tn.portfolio.axon.project.controller.TimeEstimation estimation) {
         var taskId = idService.newProjectTaskId();
         return commandGateway.send(addTaskCommand(projectId, taskId, name, description, new TimeEstimation(estimation.hours(), estimation.minutes())))
@@ -73,9 +78,8 @@ public class ProjectService {
     @EventHandler
     public void completeTask(TeamTaskCompletedEvent event) {
         projects.findProjectByTaskId(event.projectTaskId().value())
-                .ifPresentOrElse(project -> completeTask(project, event), () -> {
-                    log.warn("couldn't find project for task %s".formatted(event.projectTaskId()));
-                });
+                .ifPresentOrElse(project -> completeTask(project, event),
+                        () -> log.warn("couldn't find project for task %s".formatted(event.projectTaskId())));
     }
 
     private CompletableFuture<Object> completeTask(Project project, TeamTaskCompletedEvent event) {
