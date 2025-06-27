@@ -16,7 +16,7 @@ Tämä on esimerkki kevyestä projektinhallintamallista, jossa tiimit ja projekt
 - Maven
 - PostgreSQL
 - Docker
-- Axon
+- Axon (käyttää embedded Axon Serveriä, ei vaadi erillistä instanssia)
 - Spring Boot
 - Spring JPA
 - JUnit 5 + Mockito
