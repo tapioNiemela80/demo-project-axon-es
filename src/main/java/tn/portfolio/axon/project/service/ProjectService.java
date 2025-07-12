@@ -1,7 +1,9 @@
 package tn.portfolio.axon.project.service;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.eventhandling.DisallowReplay;
 import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.eventhandling.ResetHandler;
 import org.axonframework.modelling.command.AggregateNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,10 +78,16 @@ public class ProjectService {
     }
 
     @EventHandler
+    @DisallowReplay
     public void completeTask(TeamTaskCompletedEvent event) {
         projects.findProjectByTaskId(event.projectTaskId().value())
                 .ifPresentOrElse(project -> completeTask(project, event),
                         () -> log.warn("couldn't find project for task %s".formatted(event.projectTaskId())));
+    }
+
+    @ResetHandler
+    public void reset(){
+        //do nothing, required by axon..
     }
 
     private CompletableFuture<Object> completeTask(Project project, TeamTaskCompletedEvent event) {

@@ -1,7 +1,9 @@
 package tn.portfolio.axon.approval.service;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.eventhandling.DisallowReplay;
 import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.eventhandling.ResetHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tn.portfolio.axon.approval.command.ApproveProjectByApproverCommand;
@@ -39,9 +41,15 @@ public class ApprovalService {
     }
 
     @EventHandler
+    @DisallowReplay
     public void on(ProjectApproverPlacedEvent event) {
         //creates new Approval Aggregate per approver when project is created (and emits ProjectApproverPlacedEvent)
         commandGateway.send(initializeProjectApprovementCommand(event));
+    }
+
+    @ResetHandler
+    public void reset(){
+        //do nothing, required by axon..
     }
 
     private InitializeProjectApprovementCommand initializeProjectApprovementCommand(ProjectApproverPlacedEvent event) {
@@ -63,12 +71,14 @@ public class ApprovalService {
     }
 
     @EventHandler
+    @DisallowReplay
     public void on(TaskAddedToProjectEvent event) {
         List<Approval> approvalList = approvalRepository.findByProjectId(event.projectId().value());
         approvalList.forEach(approval -> sendEmailAboutNewTask(approval, event));
     }
 
     @EventHandler
+    @DisallowReplay
     public void on(ProjectCompletedEvent event) {
         List<Approval> approvalList = approvalRepository.findByProjectId(event.projectId().value());
         approvalList.forEach(approval -> sendEmailAboutProjectToApprove(approval, event));
